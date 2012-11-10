@@ -1,0 +1,19 @@
+[submodule "igreport_project/rapidsms"]
+	path = igreport_project/rapidsms
+	url = git://github.com/rapidsms/rapidsms
+[submodule "igreport_project/django_eav"]
+	path = igreport_project/django_eav
+	url = git://github.com/daveycrockett/django-eav.git
+[submodule "igreport_project/rapidsms_polls"]
+	path = igreport_project/rapidsms_polls
+	url = git://github.com/daveycrockett/rapidsms-polls
+[submodule "igreport_project/rapidsms_script"]
+	path = igreport_project/rapidsms_script
+	url = git://github.com/daveycrockett/rapidsms-script
+[submodule "igreport_project/rapidsms_httprouter_src"]
+	path = igreport_project/rapidsms_httprouter_src
+	url = git://github.com/daveycrockett/rapidsms-httprouter
+
+[submodule "igreport_project/rapidsms_generic"]
+	path = igreport_project/rapidsms_generic
+	url = git://github.com/daveycrockett/rapidsms-generic
