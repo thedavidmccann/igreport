@@ -2,6 +2,9 @@
 # vim: ai ts=4 sts=4 et sw=4
 # encoding=utf-8
 
+HOTLINE_NAME_QUESTION = "Thanks for your report, please send us ONLY the name of the person or organization you're reporting on?"
+HOTLINE_LOCATION_QUESTION = "Please send us ONLY the name of your district?"
+HOTLINE_CONFIRMATION_MESSAGE = "Your report has been recorded. Thank you."
 
 # -------------------------------------------------------------------- #
 #                          PATH CONFIGURATION                          #
@@ -17,11 +20,11 @@ sys.path.append(os.path.join(filedir, 'rapidsms_generic'))
 sys.path.append(os.path.join(filedir, 'rapidsms_polls'))
 sys.path.append(os.path.join(filedir, 'rapidsms_script'))
 sys.path.append(os.path.join(filedir, 'django_eav'))
+sys.path.append(os.path.join(filedir, 'igreport_src'))
 
 # -------------------------------------------------------------------- #
 #                          MAIN CONFIGURATION                          #
 # -------------------------------------------------------------------- #
-BAD_WORDS = ['poop', ] #list of profanities
 TIME_ZONE = "Africa/Kampala"
 EMAIL_HOST_USER = ''
 EMAIL_HOST = '127.0.0.1'
@@ -100,6 +103,7 @@ INSTALLED_APPS = [
     "poll",
     "script",
     "rapidsms",
+    "igreport",
     #"permission",
    # nothing after south
     #"south",
