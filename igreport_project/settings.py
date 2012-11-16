@@ -110,6 +110,7 @@ INSTALLED_APPS = [
 ]
 
 SMS_APPS = [
+    "igreport",
     "script",
     "poll",
 ]
