@@ -3,7 +3,9 @@
 # encoding=utf-8
 
 HOTLINE_NAME_QUESTION = "Thanks for your report, please send us ONLY the name of the person or organization you're reporting on?"
-HOTLINE_LOCATION_QUESTION = "Please send us ONLY the name of your district?"
+HOTLINE_WHEN_QUESTION = "When did the event you are reporting happen?"
+HOTLINE_DISTRICT_QUESTION = "Please send us ONLY the name of your district?"
+HOTLINE_SUBCOUNTY_QUESTION = "Please send us ONLY the name of your sub county?"
 HOTLINE_CONFIRMATION_MESSAGE = "Your report has been recorded. Thank you."
 
 # -------------------------------------------------------------------- #
@@ -104,9 +106,9 @@ INSTALLED_APPS = [
     "script",
     "rapidsms",
     "igreport",
-    #"permission",
+    # "permission",
    # nothing after south
-    #"south",
+    # "south",
 ]
 
 SMS_APPS = [
@@ -161,8 +163,8 @@ SITE_ID = 1
 # polls across different websites with the same id
 DEPLOYMENT_ID = 1
 
-#model containing blacklisted contacts
-BLACKLIST_MODEL= "unregister.Blacklist"
+# model containing blacklisted contacts
+BLACKLIST_MODEL = "unregister.Blacklist"
 
 # these weird dependencies should be handled by their respective apps,
 # but they're not, so here they are. most of them are for django admin.
@@ -172,13 +174,10 @@ TEMPLATE_CONTEXT_PROCESSORS = [
     "django.core.context_processors.i18n",
     "django.core.context_processors.media",
     "django.core.context_processors.request",
-    "generic.context_processors.map_params",
-    "uganda_common.context_processors.authtabs",
-    "ureport.context_processors.voices",
 ]
 
 MIDDLEWARE_CLASSES = (
-     'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -186,9 +185,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.cache.CacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
-    #'tracking.middleware.UserTrackingMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-     "ureport.middleware.permissions.RequirePermissionMiddleware",
 )
 
 # -------------------------------------------------------------------- #
@@ -217,7 +214,7 @@ TEMPLATE_LOADERS = (
 # the project-level url patterns
 ROOT_URLCONF = "urls"
 
-#caching stuff
+# caching stuff
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
@@ -240,16 +237,16 @@ ALLOWED = (
 
     )
 
-#AUTHENTICATION_BACKENDS = (
+# AUTHENTICATION_BACKENDS = (
 #    'django.contrib.auth.backends.ModelBackend',
 #    'permission.backends.RoleBackend',
 #    'permission.backends.PermissionBackend',
 #    )
-#south stuff
+# south stuff
 SOUTH_TESTS_MIGRATE = False
 
 USE_I18N = True
-INITIAL_USSD_SCREEN='ussd_root'
+INITIAL_USSD_SCREEN = 'ussd_root'
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
@@ -275,5 +272,5 @@ if 'test' in sys.argv:
     for db_name in DATABASES:
         DATABASES[db_name]['TEST_NAME'] = os.path.join(
             tempfile.gettempdir(),
-            "%s.ureport.test.sqlite3" % db_name)
+            "%s.igreport.test.sqlite3" % db_name)
 
