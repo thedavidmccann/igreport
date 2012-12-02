@@ -1,0 +1,32 @@
+{% extends "igreport/template.html" %}
+{% block title %}{{ block.super }}Message Tester{% endblock %}
+{% block styles %}
+{{ block.super }}
+<link rel="stylesheet" href="{{ STATIC_URL }}/igreport/css/tester.css" />
+{% endblock %}
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="span6">
+			<div class="hero-unit">
+				<h1>Test It</h1>
+				<form id="form-test-message">
+	      			<input type="hidden" name="sender" value="8675309" />
+					<input type="hidden" name="backend" value="test-backend" />
+					<p><span>Get a view of your SMS users' experience by typing a message to send to the system: <input type="text" name="message" placeholder="SMS Message"/></span></p>
+					<p><a id="button-test-message" class="btn btn-primary btn-large">Send &raquo;</a></p>
+	      		</form>
+			</div>
+		</div>
+		<div id="messages" class="span6">
+			<h2>Messages<span class="pull-right"><small><a>clear message history</a></small></span></h2>
+			<p>Loading Messages..</p>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ block.super }}
+<script type="text/javascript" src="{{ STATIC_URL }}igreport/js/tester.js"></script>
+{% endblock %}
+

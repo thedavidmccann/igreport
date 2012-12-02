@@ -26,17 +26,17 @@ class Command(BaseCommand):
         print "when question is: %s" % HOTLINE_WHEN_QUESTION
         print "confirmation message is: %s" % HOTLINE_CONFIRMATION_MESSAGE
 
-        script = Script.objects.create(slug='hotline_script', name='IGReport Hotlin Script', enabled=True)
+        script = Script.objects.create(slug='hotline_script', name='IGReport Hotline Script', enabled=True)
         script.sites.add(Site.objects.get_current())
 
         user = User.objects.all()[0]
 
         # Welcome Message, asks for subect of report's name or organization
-        name_poll = Poll.objects.create(name='hotline_name', user=user, question=HOTLINE_NAME_QUESTION, type=Poll.TYPE_TEXT, default_response='')
-        name_poll.sites.add(Site.objects.get_current())
-        name_step = ScriptStep.objects.create(script=script, order=0, message='', poll=name_poll, rule=ScriptStep.RESEND_MOVEON, \
+        subject_poll = Poll.objects.create(name='hotline_subject', user=user, question=HOTLINE_NAME_QUESTION, type=Poll.TYPE_TEXT, default_response='')
+        subject_poll.sites.add(Site.objects.get_current())
+        subject_step = ScriptStep.objects.create(script=script, order=0, message='', poll=subject_poll, rule=ScriptStep.RESEND_MOVEON, \
                         start_offset=0, retry_offset=3600, giveup_offset=3600, num_tries=1)
-        script.steps.add(name_step)
+        script.steps.add(subject_step)
 
         # District question
         district_poll = Poll.objects.create(name='hotline_district', user=user, question=HOTLINE_DISTRICT_QUESTION, type=Poll.TYPE_LOCATION, default_response='')

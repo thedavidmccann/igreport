@@ -1,0 +1,51 @@
+{% for r in reports %}
+<tr {% if not r.completed %}class="warning"{% endif %}{% if r.synced %}class="success"{% endif %}>
+	<td>{{ r.report }}</td>
+	<td>{{ r.subject }}</td>
+	<td>{{ r.datetime }}</td>
+	<td>
+		{% if r.subcounty %}
+			{{ r.subcounty.name }}
+		{% else %}
+			{{ r.subcounty_freeform }}
+		{% endif %} <small>(subcounty)</small>,
+		{% if r.district %}
+			{{ r.district.name }}
+		{% else %}
+			No District
+		{% endif %},
+		{% if r.when_datetime %}
+			{{ r.when_datetime }}
+		{% else %} 
+			{{r.when_freeform }}
+		{% endif %}</td>
+	<td><small>{{ r.connection.identity }}</small></td>
+	<td>
+		<input type="hidden" name="data"
+			data-id="{{ r.pk }}" 
+			data-report="{{ r.report }}"
+			data-subject="{{ r.subject }}"
+			data-subcountyfreeform="{{ r.subcounty_freeform }}"
+			data-subcounty="{% if r.subcounty %}{{ r.subcounty.pk }}{% endif %}"
+			data-district="{{ r.district.pk }}"
+			data-connection="{{ r.connection.identity }}"
+			data-whenfreeform="{{ r.when_freeform }}"
+			data-whendatetime="{% if r.when_datetime %}{{ r.when_datetime|date:"m/d/Y" }}{% endif %}"
+			data-category="{{ r.category.pk }}"
+			{% for c in r.comments.all %}
+				data-commentuser{{ forloop.counter0 }}="{{ c.user.username }}"
+				data-comment{{ forloop.counter0 }}="{{ c.comment }}"
+				data-commentdatetime{{ forloop.counter0 }}="{{ c.datetime }}"
+			{% endfor %}
+		/>
+		{% if not r.synced %}
+			<a class="edit-btn btn"><i class="icon-edit"></i></a>
+		{% endif %}
+		{% if r.completed %}
+			{% if not r.synced %}
+				<a class="sync-btn btn pull-right"><i class="icon-refresh"></i></a>
+			{% endif %}
+		{% endif %}
+	</td>
+</tr>
+{% endfor %}

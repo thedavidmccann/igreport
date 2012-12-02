@@ -27,26 +27,9 @@ sys.path.append(os.path.join(filedir, 'igreport_src'))
 # -------------------------------------------------------------------- #
 #                          MAIN CONFIGURATION                          #
 # -------------------------------------------------------------------- #
-TIME_ZONE = "Africa/Kampala"
-EMAIL_HOST_USER = ''
-EMAIL_HOST = '127.0.0.1'
-
-# map bounding box
-MIN_LON = '29.55322265625'
-MAX_LON = '33.92578125'
-MIN_LAT = '-1.0326589311777759'
-MAX_LAT = '4.280680030820496'
-# map categorized color pallete
-CATEGORY_COLORS = ['#AA4643', '#4572A7', '#89A54E', '#80699B', '#3D96AE', '#DB843D', '#92A8CD', '#A47D7C', '#B5CA92']
+TIME_ZONE = "America/New_York"  # "Africa/Kampala"
 
 ADMINS = (
-)
-
-gettext = lambda s: s
-
-LANGUAGES = (
-    ('ach', gettext('luo')),
-    ('en', gettext('English')),
 )
 
 # you should configure your database here before doing any real work.
@@ -92,6 +75,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.contenttypes",
     "django.contrib.humanize",
+    "django.contrib.staticfiles",
 
     # the rapidsms contrib apps.
     "rapidsms.contrib.default",
@@ -117,6 +101,18 @@ SMS_APPS = [
     "poll",
 ]
 
+STATIC_ROOT = '/opt/static/'
+STATIC_URL = '/static/'
+
+AUTH_PROFILE_MODULE = 'igreport.UserProfile'
+LOCATION_POLL_VALID_TYPES = ['district']
+# List of finder classes that know how to find static files in
+# various locations.
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+)
 
 # this rapidsms-specific setting defines which views are linked by the
 # tabbed navigation. when adding an app to INSTALLED_APPS, you may wish
@@ -152,8 +148,9 @@ TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
 
 # for some reason this setting is blank in django's global_settings.py,
 # but it is needed for static assets to be linkable.
-MEDIA_URL = "/static/"
-ADMIN_MEDIA_PREFIX = "/static/media/"
+# MEDIA_URL = "/static/"
+ADMIN_MEDIA_PREFIX = "/static/admin/"
+
 # this is required for the django.contrib.sites tests to run, but also
 # not included in global_settings.py, and is almost always ``1``.
 # see: http://docs.djangoproject.com/en/dev/ref/contrib/sites/
@@ -174,6 +171,7 @@ TEMPLATE_CONTEXT_PROCESSORS = [
     "django.core.context_processors.i18n",
     "django.core.context_processors.media",
     "django.core.context_processors.request",
+    "django.core.context_processors.static",
 ]
 
 MIDDLEWARE_CLASSES = (
@@ -186,6 +184,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
 )
 
 # -------------------------------------------------------------------- #

@@ -7,7 +7,8 @@ from django.contrib.auth.models import User
 from rapidsms.models import Connection
 from rapidsms.contrib.locations.models import Location
 from script.signals import script_progress_was_completed
-from .signal_handlers import handle_report
+from .signal_handlers import handle_report, igreport_pre_save
+from django.db.models.signals import pre_save
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
@@ -29,7 +30,7 @@ class IGReport(models.Model):
     synced = models.BooleanField(default=False)
     datetime = models.DateTimeField(auto_now_add=True)
     report = models.TextField()
-    name = models.TextField(blank=True, null=True, default=None)
+    subject = models.TextField(blank=True, null=True, default=None)
     district = models.ForeignKey(Location, null=True, default=None, related_name='district_reports')
     subcounty_freeform = models.TextField(blank=True, null=True, default=None)
     subcounty = models.ForeignKey(Location, null=True, default=None, related_name='subcounty_reports')
@@ -38,3 +39,4 @@ class IGReport(models.Model):
     category = models.ForeignKey(Category, null=True, default=None)
 
 script_progress_was_completed.connect(handle_report, weak=False)
+pre_save.connect(igreport_pre_save, sender=IGReport, weak=False)
