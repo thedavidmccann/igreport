@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 
 from django.template import RequestContext
 from igreport.models import IGReport, Category
+from igreport.models import UserProfile
 
 from rapidsms.contrib.locations.models import Location
 from datetime import datetime
@@ -19,12 +20,20 @@ def show_reports(request, **kwargs):
     report_filter = request.GET.get('filter', 'all')
     print report_filter
     reports = IGReport.objects.all()
+
+    if not request.user.is_staff:
+        try:
+            reports = reports.filter(district=request.user.get_profile().district)
+        except UserProfile.DoesNotExist:
+            return HttpResponse('', status=404)
+
     if report_filter == 'incomplete':
         reports = reports.filter(completed=False)
     elif report_filter == 'completed':
         reports = reports.filter(completed=True, synced=False)
     elif report_filter == 'synced':
         reports = reports.filter(synced=True)
+
 
     reports = reports.order_by('synced', 'completed', '-datetime')
 
