@@ -45,8 +45,9 @@ function save() {
 }
 
 function sync() {
+        csrf = $('input[name="csrfmiddlewaretoken"]').val();
 	id = $(this).parents('tr').find('*[name="data"]').data('id');
-	$.post('/igreports/' + id + '/sync/', '', loadReports);
+	$.post('/igreports/' + id + '/sync/', 'csrfmiddlewaretoken='+csrf, loadReports);
 }
 
 function edit() {
