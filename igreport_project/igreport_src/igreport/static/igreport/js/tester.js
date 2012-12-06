@@ -19,8 +19,11 @@ function reloadMessages() {
 
 function sendMessage() {
 	// create a dummy message while waiting for the refresh from the DB
+	$('#messages p span').remove();
 	messageLi = $('<li/>').addClass('incoming');
-	messageLi.text($('*[name="message"]').val());
+	messageLabel = $('<div/>').addClass('alert alert-info');
+	messageLi.append(messageLabel);
+	messageLabel.text($('*[name="message"]').val());
 	$('#messages ul').append(messageLi);
 	
 	// disable the button to avoid double-sending a message
