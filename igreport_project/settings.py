@@ -7,6 +7,9 @@ HOTLINE_WHEN_QUESTION = "When did the event you are reporting happen?"
 HOTLINE_DISTRICT_QUESTION = "Please send us ONLY the name of your district?"
 HOTLINE_SUBCOUNTY_QUESTION = "Please send us ONLY the name of your sub county?"
 HOTLINE_CONFIRMATION_MESSAGE = "Your report has been recorded. Thank you."
+CMS_USER = 'IGG developer'
+CMS_PASSWORD = 'uncooperative'
+CMS_URL = 'localhost:8008/sync/'
 
 # -------------------------------------------------------------------- #
 #                          PATH CONFIGURATION                          #

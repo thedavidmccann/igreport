@@ -41,17 +41,6 @@ def show_reports(request, **kwargs):
         'reports':reports
     }, context_instance=RequestContext(request))
 
-@require_POST
-@login_required
-def sync_report(request, report_id):
-    report = get_object_or_404(IGReport, pk=long(report_id))
-    if report.completed:
-        report.synced = True
-        report.save()
-        return HttpResponse('OK',
-            status=200)
-    else:
-        return HttpResponse('', status=400)
 
 @require_POST
 @login_required

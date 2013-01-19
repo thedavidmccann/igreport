@@ -1,5 +1,5 @@
 from django.contrib import admin
-from igreport.models import UserProfile
+from igreport.models import UserProfile, Category
 from django.forms import ModelForm, ModelChoiceField
 from rapidsms.contrib.locations.models import Location
 
@@ -12,3 +12,5 @@ class UserProfileAdmin(admin.ModelAdmin):
     form = UserProfileForm
 
 admin.site.register(UserProfile, UserProfileAdmin)
+
+admin.site.register(Category)
