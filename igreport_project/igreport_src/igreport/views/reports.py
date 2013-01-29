@@ -66,14 +66,24 @@ def submit_report(request, report_id):
 
         report.subject = request.POST['subject'] or ''
         report.report = request.POST['report'] or ''
+        valid_date = False
         if request.POST['whendatetime']:
             report.when_datetime = datetime.strptime(request.POST['whendatetime'], '%m/%d/%Y')
         else:
             report.when_datetime = None
+        valid_date = True
+
+        if request.POST['amount']:
+            report.amount = float(request.POST['amount'])
+        else:
+            report.amount = None
 
         report.save()
     except ValueError:
-        return HttpResponse('whendatetime', status=400)
+        if valid_date:
+            return HttpResponse('amount', status=400)
+        else:
+            return HttpResponse('whendatetime', status=400)
     except Location.DoesNotExist:
         if valid_district:
             return HttpResponse('subcounty', status=400)

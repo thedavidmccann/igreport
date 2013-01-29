@@ -31,9 +31,9 @@ urlpatterns = patterns('',
     url('^logout$', require_POST(logout)),
 
     (r'^test/$', login_required(direct_to_template), {'template':'igreport/tester.html'}),
-    url('^test/progress/$', check_progress),
+    url('^test/progress/\d*/$', check_progress),
     url('^messages/(?P<identity>\d{7,20})/$', show_messages),
-    url('^messages/(?P<identity>\d{7,20})/(?P<start_year>\d{4})/(?P<start_month>\d{2})/(?P<start_day>\d{2})/(?P<start_hour>\d{2})/(?P<start_minute>\d{2})/(?P<start_second>\d{2})/$', show_messages),
+    url('^messages/(?P<identity>\d{7,20})/(?P<start_year>\d{4})/(?P<start_month>\d{2})/(?P<start_day>\d{2})/(?P<start_hour>\d{2})/(?P<start_minute>\d{2})/(?P<start_second>\d{2})/\d*/$', show_messages),
     url('^messages/(?P<identity>\d{7,20})/(?P<start_year>\d{4})/(?P<start_month>\d{2})/(?P<start_day>\d{2})/(?P<start_hour>\d{2})/(?P<start_minute>\d{2})/(?P<start_second>\d{2})/(?P<end_year>\d{4})/(?P<end_month>\d{2})/(?P<end_day>\d{2})/(?P<end_hour>\d{2})/(?P<end_minute>\d{2})/(?P<end_second>\d{2})/$', show_messages),
 
     (r'^reports/$', login_required(direct_to_template), {'template':'igreport/reports.html'}),

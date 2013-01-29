@@ -67,6 +67,7 @@ class ModelTest(TestCase):  # pragma: no cover
 
         report = 'there are many snakes in BUSIA'
         name = 'SNAKES, MAN!'
+        amount = 'texas$'
         subcounty = 'gwinnett somehow'
         when = '7 days ago'
 
@@ -78,6 +79,7 @@ class ModelTest(TestCase):  # pragma: no cover
         script_prog = ScriptProgress.objects.all()[0]
 
         self.fake_script_dialog(script_prog, [('hotline_name', name), \
+            ('hotline_amount', amount), \
             ('hotline_district', 'busia'), \
             ('hotline_subcounty', subcounty), \
             ('hotline_when', when)])
@@ -85,6 +87,7 @@ class ModelTest(TestCase):  # pragma: no cover
         ig_report = IGReport.objects.all()[0]
         self.assertEquals(ig_report.report, report)
         self.assertEquals(ig_report.name, name)
+        self.assertEquals(ig_report.amount_freeform, amount)
         self.assertEquals(ig_report.subcounty_freeform, subcounty)
         self.assertEquals(ig_report.subcounty, Location.objects.get(type__name='sub_county'))
         self.assertEquals(ig_report.district, Location.objects.get(type__name='district'))

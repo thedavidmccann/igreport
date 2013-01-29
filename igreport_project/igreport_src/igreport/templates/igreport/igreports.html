@@ -2,8 +2,9 @@
 <tr {% if not r.completed %}class="warning"{% endif %}{% if r.synced %}class="success"{% endif %}>
 	<td>{{ r.report }}</td>
 	<td>{{ r.subject }}</td>
+	<td><small class="amount">{% if r.amount %}{{ r.amount }}{% else %}{{ r.amount_freeform }}{% endif %}</small></td>
 	<td>{{ r.datetime }}</td>
-	<td>
+	<td><small>
 		{% if r.subcounty %}
 			{{ r.subcounty.name }}
 		{% else %}
@@ -15,10 +16,10 @@
 			No District
 		{% endif %},
 		{% if r.when_datetime %}
-			{{ r.when_datetime }}
+			{{ r.when_datetime|date:"d M Y" }}
 		{% else %} 
 			{{r.when_freeform }}
-		{% endif %}</td>
+		{% endif %}</small></td>
 	<td><small>{{ r.connection.identity }}</small></td>
 	<td>
 		<input type="hidden" name="data"
@@ -32,12 +33,21 @@
 			data-whenfreeform="{{ r.when_freeform }}"
 			data-whendatetime="{% if r.when_datetime %}{{ r.when_datetime|date:"m/d/Y" }}{% endif %}"
 			data-category="{{ r.category.pk }}"
+			data-amountfreeform="{{ r.amount_freeform }}"
+			data-amount="{% if r.amount %}{{ r.amount }}{% else %}{{ r.amount_freeform }}{% endif %}"
 			{% for c in r.comments.all %}
 				data-commentuser{{ forloop.counter0 }}="{{ c.user.username }}"
 				data-comment{{ forloop.counter0 }}="{{ c.comment }}"
 				data-commentdatetime{{ forloop.counter0 }}="{{ c.datetime }}"
 			{% endfor %}
 		/>
+		<div class="row-comments" style="display:none">
+			<ul>
+			{% for c in r.comments.all %}
+				<li>{{ c.user.username }} at {{ c.datetime|date:"m d Y" }}: {{ c.comment }}</li>
+			{% endfor %}
+			</ul>
+		</div>
 		{% if not r.synced %}
 			<a class="edit-btn btn"><i class="icon-edit"></i></a>
 		{% endif %}

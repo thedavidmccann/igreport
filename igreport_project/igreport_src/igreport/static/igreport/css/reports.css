@@ -2,6 +2,14 @@
 	width:20%;
 }
 
+.controls-column {
+	width: 100px;
+}
+
 option {
 	text-transform: capitalize;
+}
+
+.amount {
+	color: green;
 }

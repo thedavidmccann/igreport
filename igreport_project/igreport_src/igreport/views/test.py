@@ -5,11 +5,12 @@
 from django.http import HttpResponse
 from django.core.management import call_command
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
 
 @login_required
 def check_progress(request):
     call_command('check_script_progress')
-    return HttpResponse('OK',
+    return HttpResponse('OK %d' % datetime.now().microsecond,
         status=200)
 
 

@@ -10,6 +10,7 @@ from poll.models import Poll
 def handle_report(**kwargs):
     from .models import IGReport
     subject_poll = Poll.objects.get(scriptstep__script__slug='hotline_script', name='hotline_subject')
+    amount_poll = Poll.objects.get(scriptstep__script__slug='hotline_script', name='hotline_amount')
     district_poll = Poll.objects.get(scriptstep__script__slug='hotline_script', name='hotline_district')
     subcounty_poll = Poll.objects.get(scriptstep__script__slug='hotline_script', name='hotline_subcounty')
     when_poll = Poll.objects.get(scriptstep__script__slug='hotline_script', name='hotline_when')
@@ -22,6 +23,7 @@ def handle_report(**kwargs):
     report.subject = find_best_response(session, subject_poll)
     report.when_freeform = find_best_response(session, when_poll)
     report.district = find_best_response(session, district_poll)
+    report.amount_freeform = find_best_response(session, amount_poll)
 
     report.subcounty_freeform = find_best_response(session, subcounty_poll)
     if report.subcounty_freeform:
@@ -31,7 +33,7 @@ def handle_report(**kwargs):
 
 def igreport_pre_save(sender, **kwargs):
     instance = kwargs['instance']
-    if instance.category and instance.district and instance.subcounty and instance.when_datetime:
+    if instance.category and instance.district and instance.subcounty and instance.when_datetime and instance.amount:
         instance.completed = True
     else:
         instance.completed = False

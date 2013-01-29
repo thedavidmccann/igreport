@@ -58,6 +58,9 @@ function edit() {
     }
     colSpan = $('#content tbody tr').first().find('td').length;
     $(this).parents('tr').after('<tr id="editFormRow"><td colspan="' + colSpan + '"></td></tr>');
+    comments = $(this).parents('tr').find('.row-comments').clone();
+    $('#comments').append(comments);
+    $('#comments .row-comments').show();
     $('#editFormRow td').append($('#editForm'));
     $('#editForm').show(100);
 

@@ -15,12 +15,14 @@ class Command(BaseCommand):
 
     def handle(self, *files, **options):
         HOTLINE_NAME_QUESTION = settings.HOTLINE_NAME_QUESTION
+        HOTLINE_AMOUNT_QUESTION = settings.HOTLINE_AMOUNT_QUESTION
         HOTLINE_DISTRICT_QUESTION = settings.HOTLINE_DISTRICT_QUESTION
         HOTLINE_SUBCOUNTY_QUESTION = settings.HOTLINE_SUBCOUNTY_QUESTION
         HOTLINE_WHEN_QUESTION = settings.HOTLINE_WHEN_QUESTION
         HOTLINE_CONFIRMATION_MESSAGE = settings.HOTLINE_CONFIRMATION_MESSAGE
 
         print "name question is: %s" % HOTLINE_NAME_QUESTION
+        print "amount question is: %s" % HOTLINE_AMOUNT_QUESTION
         print "district question is: %s" % HOTLINE_DISTRICT_QUESTION
         print "subcounty question is: %s" % HOTLINE_SUBCOUNTY_QUESTION
         print "when question is: %s" % HOTLINE_WHEN_QUESTION
@@ -38,28 +40,35 @@ class Command(BaseCommand):
                         start_offset=0, retry_offset=3600, giveup_offset=3600, num_tries=1)
         script.steps.add(subject_step)
 
+        # Welcome Message, asks for subect of report's name or organization
+        amount_poll = Poll.objects.create(name='hotline_amount', user=user, question=HOTLINE_AMOUNT_QUESTION, type=Poll.TYPE_TEXT, default_response='')
+        amount_poll.sites.add(Site.objects.get_current())
+        amount_step = ScriptStep.objects.create(script=script, order=1, message='', poll=amount_poll, rule=ScriptStep.RESEND_MOVEON, \
+                        start_offset=0, retry_offset=3600, giveup_offset=3600, num_tries=1)
+        script.steps.add(amount_step)
+
         # District question
         district_poll = Poll.objects.create(name='hotline_district', user=user, question=HOTLINE_DISTRICT_QUESTION, type=Poll.TYPE_LOCATION, default_response='')
         district_poll.sites.add(Site.objects.get_current())
-        district_step = ScriptStep.objects.create(script=script, order=1, poll=district_poll, rule=ScriptStep.STRICT_MOVEON, \
+        district_step = ScriptStep.objects.create(script=script, order=2, poll=district_poll, rule=ScriptStep.STRICT_MOVEON, \
                             start_offset=0, retry_offset=3600, num_tries=1, giveup_offset=3600)
         script.steps.add(district_step)
 
         # Subcounty question
         subcounty_poll = Poll.objects.create(name='hotline_subcounty', user=user, question=HOTLINE_SUBCOUNTY_QUESTION, type=Poll.TYPE_TEXT, default_response='')
         subcounty_poll.sites.add(Site.objects.get_current())
-        subcounty_step = ScriptStep.objects.create(script=script, order=2, poll=subcounty_poll, message='', rule=ScriptStep.RESEND_MOVEON, \
+        subcounty_step = ScriptStep.objects.create(script=script, order=3, poll=subcounty_poll, message='', rule=ScriptStep.RESEND_MOVEON, \
                              start_offset=0, retry_offset=3600, num_tries=1, giveup_offset=3600)
         script.steps.add(subcounty_step)
 
         # When did the event reported on occur?
         when_poll = Poll.objects.create(name='hotline_when', user=user, question=HOTLINE_WHEN_QUESTION, type=Poll.TYPE_TEXT)
         when_poll.sites.add(Site.objects.get_current())
-        when_step = ScriptStep.objects.create(script=script, order=3, poll=when_poll, message='', rule=ScriptStep.RESEND_MOVEON, \
+        when_step = ScriptStep.objects.create(script=script, order=4, poll=when_poll, message='', rule=ScriptStep.RESEND_MOVEON, \
                         start_offset=0, retry_offset=3600, num_tries=1, giveup_offset=3600)
         script.steps.add(when_step)
 
         # Thank the reporter, confirm receipt
-        confirm_step = ScriptStep.objects.create(script=script, order=4, message=HOTLINE_CONFIRMATION_MESSAGE, rule=ScriptStep.WAIT_MOVEON, \
+        confirm_step = ScriptStep.objects.create(script=script, order=5, message=HOTLINE_CONFIRMATION_MESSAGE, rule=ScriptStep.WAIT_MOVEON, \
                            start_offset=0, giveup_offset=0)
         script.steps.add(confirm_step)

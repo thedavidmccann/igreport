@@ -4,8 +4,7 @@ $(function() {
 	reloadMessages();
 	var d = new Date();
 	$('#button-test-message').click(sendMessage);
-	refreshMesageInterval = setInterval(loadMessages, 5000);
-	
+	refreshMessageInterval = setInterval(advanceProgress, 1000);
 	$('#messages span a').click(reloadMessages);
 });
 
@@ -14,7 +13,17 @@ function reloadMessages() {
 	sender = $('*[name="sender"]').val();
 	refreshUrl = '/messages/' + sender + '/' + d.getFullYear() + '/' + pad(d.getMonth()) + '/' + pad(d.getDate()) + '/' + pad(d.getHours()) + '/' +
         pad(d.getMinutes()) + '/' + pad(d.getSeconds()) + '/';
-	$('#messages p').load(refreshUrl);
+	$('#messages p').load(refreshUrl + '' + new Date().getTime() + '/');
+}
+
+function loadMessages() {
+	// load the messages
+	$('#messages p').load(refreshUrl + '' + new Date().getTime() + '/');
+	
+	// re-enable the button, if necessary
+	$('#button-test-message').removeAttr('disabled');
+	
+	return true;
 }
 
 function sendMessage() {
@@ -39,17 +48,13 @@ function sendMessage() {
 	
 }
 
-function loadMessages() {
+function advanceProgress() {
 	// advance script progress
-	$.get('/test/progress/', '', function() {
-		
-		// load the messages
-		$('#messages p').load(refreshUrl);
-		
-		// re-enable the button, if necessary
-		$('#button-test-message').removeAttr('disabled');
-	});
+	$.get('/test/progress/' + new Date().getTime() + '/', '', loadMessages);
+	return true;
 }
+
+
 
 function pad(s) {
 	s = "0" + s;
