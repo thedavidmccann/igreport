@@ -42,11 +42,16 @@
 			{% endfor %}
 		/>
 		<div class="row-comments" style="display:none">
-			<ul>
-			{% for c in r.comments.all %}
-				<li>{{ c.user.username }} at {{ c.datetime|date:"m d Y" }}: {{ c.comment }}</li>
-			{% endfor %}
-			</ul>
+			<table class="table table-striped">
+				<th>Comments</th>
+				{% ifequal r.comments.all.count 0 %}
+					<tr><td>No comments yet.</td></tr>
+				{% else %}
+					{% for c in r.comments.all %}
+						<tr><td><strong>{{ c.user.username }}</strong> at {{ c.datetime|date:"d M Y H:i" }}: {{ c.comment }}</td></tr>
+					{% endfor %}
+				{% endifequal %}
+			</table>
 		</div>
 		{% if not r.synced %}
 			<a class="edit-btn btn"><i class="icon-edit"></i></a>

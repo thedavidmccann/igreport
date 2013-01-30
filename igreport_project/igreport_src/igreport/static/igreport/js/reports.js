@@ -7,8 +7,12 @@ $(function() {
 	$('#save').click(save);
 	$('#cancel').click(clearEditRow);
 	$('ul.nav a').click(filter);
-	
+	$('*[data-action="addcomment"]').click(addComment);
 });
+
+function addComment() {
+	$('#comments').append('<tr><td><textarea name="comments"></textarea></td></tr>');
+}
 
 function filter() {
 	filter = $(this).data('filter');
@@ -29,6 +33,7 @@ function loadReports() {
 
 function clearEditRow() {
     $('#editForm form')[0].reset();
+    $('#comments').empty();
    
     if ($('#editFormRow').length) {
         $('#editForm').hide();

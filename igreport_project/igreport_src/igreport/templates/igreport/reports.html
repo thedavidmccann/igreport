@@ -44,7 +44,7 @@
 			{% csrf_token %}
 			<div class="subcontainer">
 				<div class="row-fluid">
-					<div class="span3">
+					<div class="span4">
 
 							<label for ="report">Report</label>
 							<textarea name="report" id="report"></textarea>
@@ -54,7 +54,7 @@
 							<textarea name="subject" id="subject"></textarea>
 							<input type="hidden" name="id" />
 					</div>
-					<div class="span3">
+					<div class="span4">
 							<label for="district">District</label>
 							<select id="district" name="district">
 							</select>
@@ -64,7 +64,7 @@
 							</select>
 							
 					</div>
-					<div class="span3">
+					<div class="span4">
 							<label for="category">Category</label>
 							<select id="category" name="category">
 							</select>
@@ -72,14 +72,16 @@
 							<label for="when-input">When <small>(user reported: <span id="whenfreeform"></span>)</small></label>
 							<input id="whendatetime" type="text" name="whendatetime" class="hasDatePicker"/>
 					</div>
-					<div class="span3">
+				</div> <!-- /row-fluid -->
+				<div class="row-fluid">
+					<div class="span12">
 							<label for="amount">Amount <small>(user reported: <span id="amountfreeform"></span>)</small></label>
 							<input type="text" name="amount" value="" />
-							<span data-action="addcomment">Add a Comment</span>
 							<div id="comments">
 							</div>
+							<span class="label label-info" data-action="addcomment">Add a Comment</span>
 					</div>
-				</div> <!-- /row-fluid -->
+				</div>
 				<div class="row-fluid">
 					<div class="span12 form-actions">
 						<button type="button" id="save" class="btn btn-primary">save</button>

@@ -13,3 +13,7 @@ option {
 .amount {
 	color: green;
 }
+
+#comments table {
+	margin-top: 2em;
+}

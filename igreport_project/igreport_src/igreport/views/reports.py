@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.http import require_POST, require_GET
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 
 from django.template import RequestContext
 from igreport.models import IGReport, Category
@@ -16,6 +17,7 @@ from datetime import datetime
 
 @require_GET
 @login_required
+@never_cache
 def show_reports(request, **kwargs):
     report_filter = request.GET.get('filter', 'all')
     print report_filter
@@ -63,6 +65,10 @@ def submit_report(request, report_id):
             report.subcounty = Location.objects.get(id=long(request.POST['subcounty']))
         else:
             report.subcounty = None
+
+        if request.POST['comments']:
+            for comment in request.POST.getlist('comments'):
+                report.comments.create(user=request.user, comment=comment)
 
         report.subject = request.POST['subject'] or ''
         report.report = request.POST['report'] or ''
