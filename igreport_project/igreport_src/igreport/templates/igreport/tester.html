@@ -11,6 +11,7 @@
 			<div class="hero-unit">
 				<h1>Test It</h1>
 				<form id="form-test-message">
+					{% csrf_token %}
 	      			<input type="hidden" name="sender" value="8675309" />
 					<input type="hidden" name="backend" value="test-backend" />
 					<p><span>Get a view of your SMS users' experience by typing a message to send to the system: <input type="text" name="message" placeholder="SMS Message"/></span></p>

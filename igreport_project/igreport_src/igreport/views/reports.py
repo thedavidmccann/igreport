@@ -66,7 +66,7 @@ def submit_report(request, report_id):
         else:
             report.subcounty = None
 
-        if request.POST['comments']:
+        if 'comments' in request.POST:
             for comment in request.POST.getlist('comments'):
                 report.comments.create(user=request.user, comment=comment)
 

@@ -17,3 +17,7 @@ option {
 #comments table {
 	margin-top: 2em;
 }
+
+#editForm .row {
+	margin-left:5px;
+}

@@ -18,14 +18,14 @@ function filter() {
 	filter = $(this).data('filter');
 	$('ul.nav li').removeClass('active');
 	$(this).parents('li').addClass('active');
-	$('#content tbody').load('/igreports/?filter=' + filter, '', function() {
+	$('#content tbody').load('/igreports/' + new Date().getTime() + '/?filter=' + filter, '', function() {
 		$('.edit-btn').click(edit);
 		$('.sync-btn').click(sync);
 	});
 }
 
 function loadReports() {
-	$('#content tbody').load('/igreports/', '', function() {
+	$('#content tbody').load('/igreports/' + new Date().getTime() + '/', '', function() {
 		$('.edit-btn').click(edit);
 		$('.sync-btn').click(sync);
 	});

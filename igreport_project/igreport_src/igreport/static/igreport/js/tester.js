@@ -50,7 +50,7 @@ function sendMessage() {
 
 function advanceProgress() {
 	// advance script progress
-	$.get('/test/progress/' + new Date().getTime() + '/', '', loadMessages);
+	$.post('/test/progress/' + new Date().getTime() + '/', $('*[name="csrfmiddlewaretoken"]').serialize(), loadMessages);
 	return true;
 }
 

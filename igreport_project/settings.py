@@ -31,7 +31,7 @@ sys.path.append(os.path.join(filedir, 'igreport_src'))
 # -------------------------------------------------------------------- #
 #                          MAIN CONFIGURATION                          #
 # -------------------------------------------------------------------- #
-TIME_ZONE = "America/New_York"  # "Africa/Kampala"
+TIME_ZONE = "Africa/Kampala" #"America/New_York"
 
 ADMINS = (
 )
