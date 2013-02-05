@@ -50,18 +50,18 @@ def submit_report(request, report_id):
     try:
         valid_district = False
         report = get_object_or_404(IGReport, pk=long(report_id))
-        if request.POST['category']:
+        if 'category' in request.POST and request.POST['category']:
             report.category = Category.objects.get(id=long(request.POST['category']))
         else:
             report.category = None
 
-        if request.POST['district']:
+        if 'district' in request.POST and request.POST['district']:
             report.district = Location.objects.get(id=long(request.POST['district']))
         else:
             report.district = None
 
         valid_district = True
-        if request.POST['subcounty']:
+        if 'subcounty' in request.POST and request.POST['subcounty']:
             report.subcounty = Location.objects.get(id=long(request.POST['subcounty']))
         else:
             report.subcounty = None
@@ -70,16 +70,16 @@ def submit_report(request, report_id):
             for comment in request.POST.getlist('comments'):
                 report.comments.create(user=request.user, comment=comment)
 
-        report.subject = request.POST['subject'] or ''
-        report.report = request.POST['report'] or ''
+        report.subject = request.POST['subject'] if 'subject' in request.POST else ''
+        report.report = request.POST['report'] if 'report' in request.POST else ''
         valid_date = False
-        if request.POST['whendatetime']:
+        if 'whendatetime' in request.POST and request.POST['whendatetime']:
             report.when_datetime = datetime.strptime(request.POST['whendatetime'], '%m/%d/%Y')
         else:
             report.when_datetime = None
         valid_date = True
 
-        if request.POST['amount']:
+        if 'amount' in request.POST:
             report.amount = float(request.POST['amount'])
         else:
             report.amount = None

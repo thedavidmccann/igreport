@@ -1,4 +1,6 @@
 $(function() {
+	$('body').on('click', '.edit-btn', edit);
+	$('body').on('click', '.sync-btn', sync);
 	loadReports();
 	$('#subcounty').load('/subcounties/');
 	$('#district').load('/districts/');
@@ -14,21 +16,15 @@ function addComment() {
 	$('#comments').append('<tr><td><textarea name="comments"></textarea></td></tr>');
 }
 
-function filter() {
+function filter(callback) {
 	filter = $(this).data('filter');
 	$('ul.nav li').removeClass('active');
 	$(this).parents('li').addClass('active');
-	$('#content tbody').load('/igreports/' + new Date().getTime() + '/?filter=' + filter, '', function() {
-		$('.edit-btn').click(edit);
-		$('.sync-btn').click(sync);
-	});
+	$('#content tbody').load('/igreports/' + new Date().getTime() + '/?filter=' + filter);
 }
 
 function loadReports() {
-	$('#content tbody').load('/igreports/' + new Date().getTime() + '/', '', function() {
-		$('.edit-btn').click(edit);
-		$('.sync-btn').click(sync);
-	});
+	$('#content tbody').load('/igreports/' + new Date().getTime() + '/');
 }
 
 function clearEditRow() {
@@ -50,7 +46,7 @@ function save() {
 }
 
 function sync() {
-        csrf = $('input[name="csrfmiddlewaretoken"]').val();
+    csrf = $('input[name="csrfmiddlewaretoken"]').val();
 	id = $(this).parents('tr').find('*[name="data"]').data('id');
 	$.post('/igreports/' + id + '/sync/', 'csrfmiddlewaretoken='+csrf, loadReports);
 }
