@@ -31,7 +31,7 @@ sys.path.append(os.path.join(filedir, 'igreport_src'))
 # -------------------------------------------------------------------- #
 #                          MAIN CONFIGURATION                          #
 # -------------------------------------------------------------------- #
-TIME_ZONE = "Africa/Kampala" #"America/New_York"
+TIME_ZONE = "Africa/Kampala"  # "America/New_York"
 
 ADMINS = (
 )
@@ -69,7 +69,6 @@ INSTALLED_BACKENDS = {
 INSTALLED_APPS = [
     "djtables",
     "mptt",
-    "uni_form",
     "django_extensions",
     "rapidsms.contrib.handlers",
 
@@ -94,9 +93,6 @@ INSTALLED_APPS = [
     "script",
     "rapidsms",
     "igreport",
-    # "permission",
-   # nothing after south
-    # "south",
 ]
 
 SMS_APPS = [
@@ -216,18 +212,6 @@ TEMPLATE_LOADERS = (
 
 # the project-level url patterns
 ROOT_URLCONF = "urls"
-
-# caching stuff
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
-        'TIMEOUT': 6000,
-        'OPTIONS': {
-            'MAX_ENTRIES': 1000
-        }
-    }
-}
 
 ALLOWED = (
     r'/accounts/login(.*)$',
