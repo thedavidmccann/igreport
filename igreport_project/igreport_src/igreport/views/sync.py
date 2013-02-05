@@ -44,14 +44,15 @@ def sync_report(request, report_id):
         report_data['accused_gender'] = 'N'  # don't collect gender
         report_data['accused_ent_type'] = 'P'  # don't collect type
         report_data['district'] = report.district.name
+        # CATEGORIES
         report_data['offences'] = ';'.join(report.comments.values_list('comment', flat=True))  # this is wrong
         report_data['username'] = settings.CMS_USER
         report_data['password'] = settings.CMS_PASSWORD
         report_data['complainant'] = report.connection.identity
+        report_data['report'] = report.report
 
         # json doesn't know how to serialize datetimes, which means this sync code doesn't
-        # actually work at all
-        # report_data['complaint_date'] = report.when_datetime
+#         report_data['complaint_date'] = report.when_datetime
 
         report_data = simplejson.dumps(report_data)
 

@@ -1,0 +1,11 @@
+Django==1.3
+psycopg2==2.4.1
+django-extensions
+django-mptt=0.5.4
+djtables
+celery
+kombu==2.4.7
+billiard==2.7.3
+python-dateutil==1.5
+anyjson==0.3.3
+
