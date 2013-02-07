@@ -44,8 +44,7 @@ def sync_report(request, report_id):
         report_data['accused_gender'] = 'N'  # don't collect gender
         report_data['accused_ent_type'] = 'P'  # don't collect type
         report_data['district'] = report.district.name
-        # CATEGORIES
-        report_data['offences'] = ';'.join(report.comments.values_list('comment', flat=True))  # this is wrong
+        report_data['offences'] = ','.join(report.categories.values_list('name', flat=True))
         report_data['username'] = settings.CMS_USER
         report_data['password'] = settings.CMS_PASSWORD
         report_data['complainant'] = report.connection.identity
