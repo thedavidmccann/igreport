@@ -1,0 +1,21 @@
+<html>
+	<head><title>Reports</title>
+	<style>
+			table tr {margin:4px;}
+			table tr td,th {border: solid 1px #000;width:150px; }
+		</style>
+	</head>
+	<body>
+		<H1>SYNCED COMPLAINTS</H1>
+		<table>
+			<tr><th>Reference</th><th>Accused</th><th>Complainant</th><th>Case Officer</th><th>District</th><th>Report</th></tr>
+			{% for c in complaints %}
+				<tr><td>{{c.complaint_reference}}</td><td>{{c.accused}}:{{c.accused.gender}}:{{c.accused.ent_type}}</td><td>{{c.complainant}}</td><td>{{c.case_officer}}</td>
+					<td>{{c.district}}</td><td>{{c.report}}</td>
+				</tr>
+				{% empty %} <tr><td colspan='6'>Please syncronize some reports from 'IGreport App' to appear here</td></tr>
+			{% endfor %}
+		</table>
+		<a href='/admin/'>Admin Panel</a>
+	</body>
+</html>
