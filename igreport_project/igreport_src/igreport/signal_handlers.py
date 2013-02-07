@@ -33,7 +33,7 @@ def handle_report(**kwargs):
 
 def igreport_pre_save(sender, **kwargs):
     instance = kwargs['instance']
-    if instance.category and instance.district and instance.subcounty and instance.when_datetime and instance.amount:
+    if instance.pk and len(instance.categories.all()) and instance.district and instance.subcounty and instance.when_datetime and instance.amount:
         instance.completed = True
     else:
         instance.completed = False

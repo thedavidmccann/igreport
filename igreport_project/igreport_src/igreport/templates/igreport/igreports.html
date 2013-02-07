@@ -35,12 +35,10 @@
 			data-category="{{ r.category.pk }}"
 			data-amountfreeform="{{ r.amount_freeform }}"
 			data-amount="{% if r.amount %}{{ r.amount }}{% else %}{{ r.amount_freeform }}{% endif %}"
-			{% for c in r.comments.all %}
-				data-commentuser{{ forloop.counter0 }}="{{ c.user.username }}"
-				data-comment{{ forloop.counter0 }}="{{ c.comment }}"
-				data-commentdatetime{{ forloop.counter0 }}="{{ c.datetime }}"
-			{% endfor %}
 		/>
+		{% for c in r.categories.all %}
+			<input type="hidden" name="category" value="{{ c.id }}" />
+		{% endfor %} 
 		<div class="row-comments" style="display:none">
 			<table class="table table-striped">
 				<th>Comments</th>

@@ -36,7 +36,7 @@ class IGReport(models.Model):
     subcounty = models.ForeignKey(Location, null=True, default=None, related_name='subcounty_reports')
     when_freeform = models.TextField(null=True, blank=True)
     when_datetime = models.DateTimeField(default=None, null=True)
-    category = models.ForeignKey(Category, null=True, default=None)
+    categories = models.ManyToManyField(Category, related_name='reports')
     amount_freeform = models.TextField(null=True, blank=True)
     amount = models.DecimalField(decimal_places=2, max_digits=26, null=True)
 

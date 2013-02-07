@@ -1,4 +1,6 @@
-<option value=""></option>
+{% if blank_default %}
+	<option value=""></option>
+{% endif %}
 {% for e in entities %}
 	<option value="{{ e.pk }}">{{ e.name }}</option>
 {% endfor %}

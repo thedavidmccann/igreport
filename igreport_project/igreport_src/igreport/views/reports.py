@@ -48,12 +48,16 @@ def show_reports(request, **kwargs):
 @login_required
 def submit_report(request, report_id):
     try:
+        valid_categories = False
         valid_district = False
+
         report = get_object_or_404(IGReport, pk=long(report_id))
+        report.categories.clear()
         if 'category' in request.POST and request.POST['category']:
-            report.category = Category.objects.get(id=long(request.POST['category']))
-        else:
-            report.category = None
+            for category in request.POST.getlist('category'):
+                report.categories.add(Category.objects.get(id=long(category)))
+
+        valid_categories = True
 
         if 'district' in request.POST and request.POST['district']:
             report.district = Location.objects.get(id=long(request.POST['district']))
@@ -92,7 +96,10 @@ def submit_report(request, report_id):
             return HttpResponse('whendatetime', status=400)
     except Location.DoesNotExist:
         if valid_district:
-            return HttpResponse('subcounty', status=400)
+            if valid_categories:
+                return HttpResponse('subcounty', status=400)
+            else:
+                return HttpResponse('category', status=400)
         else:
             return HttpResponse('district', status=400)
     except Category.DoesNotExist:

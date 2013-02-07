@@ -57,11 +57,20 @@ function edit() {
         $('#editForm *[name="' + key + '"]').val('' + formData[key]);
         $('span[id="' + key + '"]').text(formData[key])
     }
+    categories = $(this).parents('tr').find('*[name="category"]');
+    values = Array()
+    for (i = 0; i < categories.length; i++) {
+    	values.push($(categories[i]).val());
+    }
+    $('#editForm *[name="category"]').val(values);
+    
     colSpan = $('#content tbody tr').first().find('td').length;
     $(this).parents('tr').after('<tr id="editFormRow"><td colspan="' + colSpan + '"></td></tr>');
+    
     comments = $(this).parents('tr').find('.row-comments').clone();
     $('#comments').append(comments);
     $('#comments .row-comments').show();
+    
     $('#editFormRow td').append($('#editForm'));
     $('#editForm').show(100);
 
