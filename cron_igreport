@@ -1,0 +1,1 @@
+* * * * * root /opt/env/igreport/bin/python /var/www/prod/igreport/igreport_project/manage.py check_script_progress -e 7 -l 20

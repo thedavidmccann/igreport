@@ -6,10 +6,10 @@
 	<ul>
 	{% for m in messages %}
 		{% ifequal m.direction 'O' %}
-			<li class="outgoing"><div class="alert alert-success">
+			<li class="outgoing"><div class="alert alert-success"><strong style="font-size:12pt">Complainant Received:</strong>
 		{% endifequal %}
 		{% ifequal m.direction 'I' %}
-			<li class="incoming"><div class="alert alert-info">
+			<li class="incoming"><div class="alert alert-info"><strong style="font-size:12pt">Complainant Sent:</strong>
 		{% endifequal %}	
 		{{ m.text }}
 		</span></li>

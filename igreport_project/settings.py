@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 # encoding=utf-8
 
-HOTLINE_NAME_QUESTION = "Thanks for your report, please send us ONLY the name of the person or organization you're reporting on?"
+HOTLINE_NAME_QUESTION = "Thanks for your report.I have more questions and all answers are FREE.Please send us ONLY the name of the person or organization you're reporting on?"
 HOTLINE_AMOUNT_QUESTION = "What amount of money was involved?"
 HOTLINE_WHEN_QUESTION = "When did the event you are reporting happen?"
 HOTLINE_DISTRICT_QUESTION = "Please send us ONLY the name of your district?"
