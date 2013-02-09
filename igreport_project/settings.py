@@ -102,7 +102,7 @@ SMS_APPS = [
 ]
 
 STATIC_ROOT = '/opt/static/'
-STATIC_URL = '/static/'
+STATIC_URL = '/static'
 
 AUTH_PROFILE_MODULE = 'igreport.UserProfile'
 LOCATION_POLL_VALID_TYPES = ['district']
