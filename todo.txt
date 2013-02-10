@@ -1,5 +1,0 @@
- - categories should be many-to-many
- - failed logon causes an error
- - finish sync
- - error feedback
-
