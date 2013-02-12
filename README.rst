@@ -7,9 +7,9 @@ Installation
 An example is deployed to an IG laptop, which has been configured following the directions described here.  These directions are also available at http://github.com/daveycrockett/rapidsms-training.
 
 Basic Tools
--------------
-Most linux distributions come with python and git, but instructions for installing both can be found at http://git-scm.com/downloads
- and http://www.python.org/getit/releases/2.7.3/.
+-----------------
+
+Most linux distributions come with python and git, but instructions for installing both can be found at http://git-scm.com/downloads  and http://www.python.org/getit/releases/2.7.3/.
 
 Additional Python Tools
 --------------------------
