@@ -99,11 +99,86 @@ Now that the database (and also the Yo! integration, as a bonus) are configured,
 
 You should now be able to verify that the app is ready to go by running `python manage.py runserver` and browsing to http://your.server.ip:8000/
 
-Install Web Server Tools
-``````````````````````````
+Install and Configure Web Server Tools
+``````````````````````````````````````````
 
 That said, runserver was never intended to be a production server!  For a production server, a few additional tools will be required to ensure a quality, stable web application.  First, install and configure nginx, the web server that will dispatch requests to the python app::
 
     sudo apt-get install nginx
 
+Nginx will install itself to the system startup, however the RapidSMS app itself and the messenger management command will not.  In order to make sure that those two processes stay up, you'll need to install supervisor through the package manager::
 
+    easy_install supervisor
+
+The configuration files for both of these are fairly well-documented, but it'll be much easier just to look at the configuration files for each that are already installed on the laptop, and tweak them as necessary::
+
+    /etc/supervisor/supervisor.conf
+    /etc/nginx/conf.d/igreport.conf
+
+Security
+````````````
+
+Now that you're ready to get everything running, you'll need to add the www-data (although on most systems, it already exists), and then add yourself to the www-data group::
+
+    cat /etc/passwd | grep www-data
+
+If that doesn't return any lines, go ahead and add www-data::
+
+    useradd -M -U www-data
+
+Now, add yourself to the www-data group::
+
+    groups
+    usermod -g your-user-name -G comma,separated,list,of,results,of,groups,command,plus,www-data
+
+Note that we're adding www-data to the comma-separated list of your existing groups (be sure to include sudo in the -G argument, or you'll lose your sudoers rights on the next login).
+
+Finally, change all the working directories to the appropriate permissions::
+
+    sudo chown -R www-data:www-data /opt/env
+    sudo chown -R www-data:www-data /var/www
+    sudo chmod -R ug+rwx /opt/env
+    sudo chmod -R ug+rwx /var/www
+
+Startup
+````````
+
+Now power cycle supervisord,  nginx and the supervised apps::
+
+    $ sudo /etc/init.d/supervisord restart
+    $ supervisorctl (you'll be prompted for a login and password)
+    reread
+    update
+    quit
+    $ sudo /etc/init.d/nginx restart
+
+Script Scheduling
+`````````````````````
+
+RapidSMS-script relies on a cron to check for updates in script progress::
+
+    sudo cp /var/www/prod/igreport/cron_igreport /etc/cron.d
+
+Deploying Updates
+--------------------
+
+If you've installed fabric on your local machine::
+
+    easy_install fabric
+
+and cloned the fabfile repo::
+
+    git clone git://github.com/daveycrockett/fabulous
+
+Deploying is as easy as running::
+
+    fab deploy igreport dest=prod
+
+Test and Production Environments
+----------------------------------
+
+Ultimately, you'll want parallel running versions of the igreport code on the servers, for production and testing environments.
+
+Simply duplicate the steps above for creating a database, cloning the repo, running the various management commands, and installing a supervisor process for a uwsgi socket for /var/www/test/igreport.  You can then update this with `fab deploy igreport`.
+
+ 
