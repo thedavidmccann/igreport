@@ -15,22 +15,22 @@ Additional Python Tools
 --------------------------
 Once you have python and git, there are a few additional tools that make development and deployment easier.  These are easy_install, virtualenv, and virtualenvwrapper.
 
-To install easy install, try:
+To install easy install, try::
 
     wget “http://peak.telecommunity.com/dist/ez_setup.py” 
     python ez_setup.py
 
-Then, installing Virtual Environment (and making it usable) is easy:
+Then, installing Virtual Environment (and making it usable) is easy::
 
     easy_install virtualenv
     easy_install virtualenvwrapper
     sudo mkdir /opt/env/
     
-For now, change /opt/env to be world readable, we'll lock it down later (see the section titled 'Security').
+For now, change /opt/env to be world readable, we'll lock it down later (see the section titled 'Security')::
 
     sudo chown -R your_username:your_username /opt/env
 
-Now, edit the global /etc/bash.bashrc file and add the following lines:
+Now, edit the global /etc/bash.bashrc file and add the following lines::
 
     export WORKON_HOME=/opt/env
     source /usr/local/bin/virtualenvwrapper.sh
@@ -44,7 +44,7 @@ The paths described above (/opt/env/) and also the ones described here are impor
 Install the Repo
 ``````````````````
 
-First, create a virtual environment for the deployment, clone it into its production folder, and install its dependencies:
+First, create a virtual environment for the deployment, clone it into its production folder, and install its dependencies::
 
     mkvirtualenv igreport
     sudo mkdir -p /var/www/prod/igreport
@@ -55,27 +55,27 @@ First, create a virtual environment for the deployment, clone it into its produc
     git submodule update
     pip install -r pip-requirements.txt
 
-Some distros of linux may have issues installing psycopg2 directly, if you get an error message try running:
+Some distros of linux may have issues installing psycopg2 directly, if you get an error message try running::
 
     sudo apt-get install libpq-dev
 
 Configure the Database
 `````````````````````````
 
-IGReport requires Postgresql to be installed, as it uses some database-specific SQL.  Most distributions of linux come with postgres installed, but if not you should be able to install it via the package manager:
+IGReport requires Postgresql to be installed, as it uses some database-specific SQL.  Most distributions of linux come with postgres installed, but if not you should be able to install it via the package manager::
 
     sudo apt-get install postgresql
 
-From there, configure the database user to have a password:
+From there, configure the database user to have a password::
 
     sudo passwd postgres
     sudo -u postgres psql
    
-From the psql prompt, run:
+From the psql prompt, run::
 
     \password postgres
 
-Now, you should be ready to create a localsettings.py file in /var/www/prod/igreport/igreport_project:
+Now, you should be ready to create a localsettings.py file in /var/www/prod/igreport/igreport_project::
 
     DATABASES = {
         'default': {
@@ -91,7 +91,7 @@ Now, you should be ready to create a localsettings.py file in /var/www/prod/igre
     # Yo! wants only 100 recipients at a time
     MESSAGE_CHUNK_SIZE=100
 
-Now that the database (and also the Yo! integration, as a bonus) are configured, you can execute all the sql needed to prepare the application.
+Now that the database (and also the Yo! integration, as a bonus) are configured, you can execute all the sql needed to prepare the application::
 
     python manage.py syncdb
     python manage.py loaddata locations
@@ -102,7 +102,7 @@ You should now be able to verify that the app is ready to go by running `python 
 Install Web Server Tools
 ``````````````````````````
 
-That said, runserver was never intended to be a production server!  For a production server, a few additional tools will be required to ensure a quality, stable web application.  First, install and configure nginx, the web server that will dispatch requests to the python app.
+That said, runserver was never intended to be a production server!  For a production server, a few additional tools will be required to ensure a quality, stable web application.  First, install and configure nginx, the web server that will dispatch requests to the python app::
 
     sudo apt-get install nginx
 
