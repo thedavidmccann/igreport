@@ -44,6 +44,9 @@ urlpatterns = patterns('',
     url('^igreports/(?P<identity>\d{7,20})/$', show_reports),
     url('^igreports/(?P<report_id>\d*)/$', submit_report),
     url('^igreports/(?P<report_id>\d*)/sync/$', sync_report),
+    url('^getreport/', 'igreport.views.ajax.get_report'),
+    url('^updatereport/', 'igreport.views.ajax.update_report'),
+    url('^syncreport/', 'igreport.views.ajax.sync_report'),
 
     url("^router/receive", receive),
 )

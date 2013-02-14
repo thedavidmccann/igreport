@@ -1,0 +1,37 @@
+div.report {
+	padding: 20px 20px 0px 20px;
+	/*border: solid #ccc 1px;*/
+}
+div.report td {
+	border: none;
+	padding-bottom: 10px;
+}
+div.report input {
+	padding: 5px;
+	font-size: 14px;
+	color: #333;
+}
+div.rpt-title {
+	font-size: 15px;
+	padding: 0px 0px 9px 0px;
+}
+div.rpt-label {
+	font-size: 14px;
+	padding-bottom: 8px;
+	font-weight: bold;
+}
+textarea.rpt-ta {
+	padding: 5px;
+	width: 300px;
+	height: 50px;
+	font-size: 14px;
+	color: #333;
+}
+select.rpt-list {
+	padding: 5px;
+	font-size: 13px;
+	color: #333;
+}
+label.rpt-option-label {
+	font-size: 13px;
+}

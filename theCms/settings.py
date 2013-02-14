@@ -1,3 +1,4 @@
+import os
 # Django settings for theCms project.
 
 DEBUG = True
@@ -96,3 +97,10 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 	'complaints',
 )
+
+try:
+	ls = '%s/localsettings.py' % os.path.dirname(__file__)
+	if os.path.exists(ls):
+		from localsettings import *
+except Exception as err:
+	pass
