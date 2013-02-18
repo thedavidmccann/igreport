@@ -112,4 +112,5 @@
   {% if include_file %}
     {% include include_file %}
   {% endif %}
+  {% if bottom_js %}<script type="text/javascript">{{ bottom_js|safe }}</script>{% endif %}
 {% endblock %}

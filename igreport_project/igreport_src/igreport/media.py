@@ -7,17 +7,17 @@ http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js
 """
 from django.conf import settings
 class JQueryUIMedia:
-	jqroot = '%s/igreport/jquery' % settings.STATIC_URL
-	root = '%s/igreport' % settings.STATIC_URL
-	js = (
-		'%s/jquery.min.js' % jqroot,
-		'%s/jquery-ui.min.js' % jqroot,
-		'%s/js/ajax.js' % root,
-		'%s/js/custom.js' % root,
-	)
-	css = {
-		'all': (
-			'%s/jquery-ui.css' % jqroot,
-			'%s/css/custom.css' % root,
-		)
-	}
+    jqroot = '%s/igreport/jquery' % settings.STATIC_URL
+    root = '%s/igreport' % settings.STATIC_URL
+    js = (
+            '%s/jquery.min.js' % jqroot,
+            '%s/jquery-ui.min.js' % jqroot,
+            '%s/js/ajax.js' % root,
+            '%s/js/custom.js' % root,
+    )
+    css = {
+            'all': (
+                    '%s/jquery-ui.css' % jqroot,
+                    '%s/css/custom.css' % root,
+            )
+    }

@@ -1,5 +1,5 @@
-function jqpopup(title, btns, w, h)
-{
+//
+function jqpopup(title, btns, w, h) {
 	buttons = {};
 
 	if (btns) {
@@ -32,18 +32,18 @@ function editrpt(rid) {
 	
 	ajax_wait('Getting Report Information ..');
 //
-	var url = '/getreport/?id=' + rid + '&t=' + (new Date().getTime());
+	var url = '/igreports/' + rid + '/getreport/';
 	var r = createHttpRequest();
 	r.open('GET', url, true);
 	
 	r.onreadystatechange = function() {
 		if(r.readyState == 4) {
 			ajax_done();
-			
-			if(/{error:true/.test(r.responseText)) {
-				var res= eval('('+ r.responseText +')');
-				alert('ERR: ' + res.msg);
-			} else if(/{error:false/.test(r.responseText)) {
+			if(r.status != 200) {
+				alert(r.statusText);
+				return;
+			}
+			if(/{error:false/.test(r.responseText)) {
 				var o = eval('('+ r.responseText +')');
 				var rpt = o.res.rpt;
 				var dist = o.res.dist;
@@ -62,7 +62,7 @@ function editrpt(rid) {
 				var cathtml = '';
 				if(cat.length) {
 					for(var i=0; i<cat.length; i++) {
-						cathtml += '<div style="padding-bottom:3px"><input type="checkbox" id="cat_'+cat[i].id+'" name="cat_'+cat[i].id+'" value="'+cat[i].id+'"'+(cat[i].checked?' checked="checked"':'')+'/>&nbsp;<label class="rpt-option-label" for="cat_'+cat[i].id+'">'+cat[i].name+'</label></div>';
+						cathtml += '<div style="padding-bottom:3px"><input type="checkbox" id="cat_'+cat[i].id+'" name="category" value="'+cat[i].id+'"'+(cat[i].checked?' checked="checked"':'')+'/>&nbsp;<label class="rpt-option-label" for="cat_'+cat[i].id+'">'+cat[i].name+'</label></div>';
 					}
 				}
 				if(!cathtml) {
@@ -76,7 +76,7 @@ function editrpt(rid) {
 					}
 					comments = '<div style="padding-top:5px"><strong>Current Comments</strong>:<br/>'+comments+'</div>';
 				}
-				var html = '<div class="report"><form id="rptform"><table border="0" cellpadding="0" cellspacing="0"><tr><td colspan="2"><div class="rpt-title">Submitted by <span style="color:#ff6600;font-weight:bold">'+rpt.sender+'</span> on <span style="color:#ff6600;font-weight:bold">'+rpt.date+'</span></div></td></tr><tr><td><div class="rpt-label">Report</div><div><textarea id="report" name="report" class="rpt-ta">'+rpt.report+'</textarea></div></td><td><div class="rpt-label">Accused</div><div><textarea id="accused" name="accused" class="rpt-ta">'+rpt.accused+'</textarea></div></td></tr><tr><td><div class="rpt-label">Amount</div><div><input type="text" id="amount" name="amount" value="'+rpt.amount+'" /><br/>(User reported: '+rpt.amount_ff+')</div></td><td><div class="rpt-label">Date of Incident</div><div><input type="text" id="date" name="date" style="cursor:pointer" title="Click to choose date" readonly="readonly" value="'+rpt.when+'"/><br/>(User reported: '+rpt.when_ff+')</div></td></tr><tr><td><div class="rpt-label">District</div><div><select id="dist" name="dist" class="rpt-list">'+doptions+'</select></div></td><td><div class="rpt-label">Subcounty</div><div><select id="sc" name="sc" class="rpt-list">'+soptions+'</select><br/>(User reported: '+rpt.sc_ff+')</div></td></tr><tr><td><div class="rpt-label">Category</div><div>'+cathtml+'</div></td><td><div class="rpt-label">Comments</div><div><textarea id="comments" class="rpt-ta"></textarea></div>'+comments+'</td></tr></table></form></div>';
+				var html = '<div class="report"><form id="rptform"><table border="0" cellpadding="0" cellspacing="0"><tr><td colspan="2"><div class="rpt-title">Submitted by <span style="color:#ff6600;font-weight:bold">'+rpt.sender+'</span> on <span style="color:#ff6600;font-weight:bold">'+rpt.date+'</span></div></td></tr><tr><td><div class="rpt-label">Report</div><div><textarea id="report" name="report" class="rpt-ta">'+rpt.report+'</textarea></div></td><td><div class="rpt-label">Accused</div><div><textarea id="subject" name="subject" class="rpt-ta">'+rpt.accused+'</textarea></div></td></tr><tr><td><div class="rpt-label">Amount</div><div><input type="text" id="amount" name="amount" value="'+rpt.amount+'" /><br/>(User reported: '+rpt.amount_ff+')</div></td><td><div class="rpt-label">Date of Incident</div><div><input type="text" id="date" name="whendatetime" style="cursor:pointer" title="Click to choose date" readonly="readonly" value="'+rpt.when+'"/><br/>(User reported: '+rpt.when_ff+')</div></td></tr><tr><td><div class="rpt-label">District</div><div><select id="dist" name="district" class="rpt-list">'+doptions+'</select></div></td><td><div class="rpt-label">Subcounty</div><div><select id="subcounty" name="subcounty" class="rpt-list">'+soptions+'</select><br/>(User reported: '+rpt.sc_ff+')</div></td></tr><tr><td><div class="rpt-label">Category</div><div>'+cathtml+'</div></td><td><div class="rpt-label">Comments</div><div><textarea id="comments" name="comments" class="rpt-ta"></textarea><input type="hidden" name="id" value="'+rid+'" /><input type="hidden" name="csrfmiddlewaretoken" value="'+getCookie('csrftoken')+'" /></div>'+comments+'</td></tr></table></form></div>';
 				
 				var title = 'User Report Details';
 				var btns = [{text:'Submit', click:function(){ update_rpt(rid); }}]
@@ -84,7 +84,7 @@ function editrpt(rid) {
 				document.getElementById('jqpopup').innerHTML = html;
 				jqpopup(title, btns, 850, 450);
 				
-				$.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' });
+				$.datepicker.setDefaults({ dateFormat: 'mm/dd/yy' });
 				$("#date").datepicker();
 			}
 		}
@@ -94,83 +94,24 @@ function editrpt(rid) {
 
 function update_rpt(rid) {
 
-	var f = document.getElementById('rptform');
-	var report = f.report.value;
-	var accused = f.accused.value;
-	var amount = f.amount.value;
-	var date = f.date.value;
-	var dist = f.dist[f.dist.selectedIndex].value;
-	var sc = f.sc[f.sc.selectedIndex].value;
-	var comments = f.comments.value;
-	
-	if(report.length < 1) {
-		alert('Report not valid');
-		return false;
-	}
-	if(accused.length < 1) {
-		alert('Accused not valid');
-		return false;
-	}
-	if(!(/^[0-9]+$/.test(amount))) {
-		alert('Amount not valid');
-		return false;
-	}
-	if(!(/^\d{4}-\d{2}-\d{2}$/.test(date))) {
-		alert('Date not valid');
-		return false;
-	}	
-	if(!(/^[0-9]+$/.test(dist))) {
-		alert('District not valid');
-		return false;
-	}
-	if(!(/^[0-9]+$/.test(sc))) {
-		alert('Subcounty not valid');
-		return false;
-	}
-	if(comments.length < 1) {
-		/* please provide some comments */
-	}
-	/* get the cats */
-	cats = new Array();
-	var l = f.getElementsByTagName('input');
-	for(var i=0, j=0; i<l.length; i++) {
-		if(/checkbox/i.test(l[i].type) && l[i].checked) {
-			cats[j++]=l[i].value;
-		}
-	}
-
-	var params = 'id='+rid+'&report='+encodeURIComponent(report)+'&accused='+encodeURIComponent(accused)+'&amount='+amount+'&date='+encodeURIComponent(date)+'&dist='+dist+'&sc='+sc+'&comments='+encodeURIComponent(comments);
-
-	if(cats.length > 0) {
-		params += '&catl=' + encodeURIComponent( cats.join(',') );
-	}
-	params += '&t=' + ( new Date().getTime() );
-
+	var params = $('#rptform').serialize();
 	ajax_wait('Updating Report. Please wait ..');
-	
         var r = createHttpRequest();
 	
-        r.open('POST', '/updatereport/', true);
+        r.open('POST', '/igreports/' + rid + '/', true);
         r.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	
         r.onreadystatechange = function(){
                 if(r.readyState == 4){
 			ajax_done();
-			var rtext = r.responseText;
-			if(/{error:\s*false/.test(rtext)) {
-				// success reload page
-				$('#jqpopup').dialog('close');
-				ajax_wait_update('Report updated. Refreshing ..')
-				window.location.replace(window.location);
+			if(r.status != 200) {
+				alert(r.statusText);
+				return;
 			}
-			else if(/{error:\s*true/.test(rtext)) {
-				var js = eval('('+ r.responseText +')');
-				ajax_done();
-				//alert(js.msg);
-				alert(r.responseText);
-			} else {
-				alert(r.responseText);
-			}
+			// success reload page
+			$('#jqpopup').dialog('close');
+			ajax_wait_update('Report updated. Refreshing ..')
+			window.location.replace(window.location);
 		}
 	}
 	r.send(params);
@@ -180,23 +121,40 @@ function update_rpt(rid) {
 
 function syncit(rid) {
 	ajax_wait('Syncing Report. Please wait ..');
-
-	var url = '/syncreport/?id=' + rid + '&t=' + (new Date().getTime());
-	var r = createHttpRequest();
-	r.open('GET', url, true);
 	
+	var r = createHttpRequest();
+        r.open('POST', '/igreports/' + rid + '/sync/', true);
+        r.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		
 	r.onreadystatechange = function() {
 		if(r.readyState == 4) {
 			ajax_done();
-			if(/{error:true/.test(r.responseText)) {
-				var res = eval('('+ r.responseText +')');
-				alert('ERR: ' + res.msg);
-			} else if(/{error:false/.test(r.responseText)) {
-				var res= eval('('+ r.responseText +')');
-				alert(res.msg);
-				window.location.replace(window.location);
+			if(r.status != 200) {
+				alert(r.statusText);
+				return;
 			}
+			alert('Report Successfuly synced');
+			window.location.replace(window.location);
 		}
 	}
-	r.send(null);
+	r.send('csrfmiddlewaretoken='+getCookie('csrftoken'));
 }
+function rptsetc() {
+	//alert('setting color!');
+};
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+};

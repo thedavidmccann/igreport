@@ -19,6 +19,7 @@ admin.autodiscover()
 from igreport.views.test import check_progress
 from igreport.views.messages import show_messages
 from igreport.views.reports import show_reports, submit_report
+from igreport.views.ajax import get_report
 from igreport.views.sync import sync_report
 from igreport.views.utils import show_categories, show_districts, show_subcounties
 from django.contrib.auth.views import login, logout
@@ -44,9 +45,7 @@ urlpatterns = patterns('',
     url('^igreports/(?P<identity>\d{7,20})/$', show_reports),
     url('^igreports/(?P<report_id>\d*)/$', submit_report),
     url('^igreports/(?P<report_id>\d*)/sync/$', sync_report),
-    url('^getreport/', 'igreport.views.ajax.get_report'),
-    url('^updatereport/', 'igreport.views.ajax.update_report'),
-    url('^syncreport/', 'igreport.views.ajax.sync_report'),
+    url('^igreports/(?P<report_id>\d*)/getreport/$', get_report),
 
     url("^router/receive", receive),
 )
