@@ -47,6 +47,7 @@ class IGReport(models.Model):
     categories = models.ManyToManyField(Category, related_name='reports')
     amount_freeform = models.TextField(null=True, blank=True)
     amount = models.DecimalField(decimal_places=2, max_digits=26, null=True)
+    reference_number = models.TextField(null=True, blank=True)
 
     class Meta:
         verbose_name = 'Report'
