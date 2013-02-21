@@ -8,10 +8,10 @@ from igreport.html.admin import ListStyleAdmin
 
 class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
 
-    list_display = ['message', 'accused', 'amount', 'sender', 'report_time', 'options']
+    list_display = ['message', 'accused', 'amount_formatted', 'sender', 'report_time', 'options']
     list_filter = ['datetime']
     #date_hierarchy = ['datetime']
-    search_fields = ['connection__identity']
+    search_fields = ['reference_number', 'connection__identity']
     actions = None
     Media = media.JQueryUIMedia
     change_list_template = 'igreport/change_list.html'
@@ -49,6 +49,14 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
 
     sender.short_description = 'Sender'
     sender.admin_order_field = 'connection'
+
+    def amount_formatted(self, obj):
+        if obj.amount:
+            return int(obj.amount)
+        return 'NA'
+    
+    amount_formatted.short_description = 'Amount'
+    amount_formatted.admin_order_field = 'amount'
 
     def options(self, obj):
         html = ''

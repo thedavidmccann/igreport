@@ -37,8 +37,10 @@ class IGReport(models.Model):
     completed = models.BooleanField(default=False)
     synced = models.BooleanField(default=False)
     datetime = models.DateTimeField(auto_now_add=True, editable=False, verbose_name='Report Date')
+    keyword = models.TextField(blank=True, null=True, default=None)
     report = models.TextField()
     subject = models.TextField(blank=True, null=True, default=None)
+    #district_freeform = models.TextField(blank=True, null=True, default=None)
     district = models.ForeignKey(Location, null=True, default=None, related_name='district_reports')
     subcounty_freeform = models.TextField(blank=True, null=True, default=None)
     subcounty = models.ForeignKey(Location, null=True, default=None, related_name='subcounty_reports')
@@ -47,6 +49,8 @@ class IGReport(models.Model):
     categories = models.ManyToManyField(Category, related_name='reports')
     amount_freeform = models.TextField(null=True, blank=True)
     amount = models.DecimalField(decimal_places=2, max_digits=26, null=True)
+    names = models.TextField(null=True, blank=True)
+    where = models.TextField(null=True, blank=True)
     reference_number = models.TextField(null=True, blank=True)
 
     class Meta:

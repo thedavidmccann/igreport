@@ -26,19 +26,7 @@ def get_report(request, report_id):
 
     r = get_object_or_404(IGReport, pk=report_id)
 
-    js = {
-        'accused': r.subject if r.subject else '',
-        'report': r.report if r.report else '',
-        'amount_ff': r.amount_freeform if r.amount_freeform else '',
-        'amount': str( int(r.amount) ) if r.amount else '',
-        'sc_ff': r.subcounty_freeform if r.subcounty_freeform else '',
-        'subcounty_id': r.subcounty_id if r.subcounty_id else '',
-        'district_id': r.district_id if r.district_id else '',
-        'when_ff': r.when_freeform if r.when_freeform else '',
-        'when': r.when_datetime.strftime('%m/%d/%Y') if r.when_datetime else '',
-        'date': r.datetime.strftime('%d/%m/%Y %H:%M'),
-        'sender': r.connection.identity,
-    }
+    js = dict(accused = r.subject or '', report = r.report or '', amount_ff = r.amount_freeform or '', amount = str(int(r.amount)) if r.amount else '', district_id = r.district_id or  '', date = r.datetime.strftime('%d/%m/%Y %H:%M'), sender= r.connection.identity, where = r.where or '', names = r.names or '')
     js_rpt = simplejson.dumps(js)
 
     ''' get districts '''
@@ -46,11 +34,13 @@ def get_report(request, report_id):
     l = [ '{id:%s,name:%s}' % (d.id, json.dumps(d.name)) for d in objs ]
     js_districts = '[%s]' % ','.join(l)
 
+    """
     ''' get sub-counties '''
     objs = Location.objects.filter(type='sub_county').order_by('name')
     l = [ '{id:%s,name:%s}' % (d.id, json.dumps(d.name)) for d in objs ]
     js_subcty = '[%s]' % ','.join(l)
-
+    """
+    
     ''' the selected categories '''
     curr_categories = [c.id for c in r.categories.all()]
 
@@ -71,6 +61,6 @@ def get_report(request, report_id):
     l = [ '{user:%s,date:%s,comment:%s}' % (json.dumps(c.user.username), json.dumps(c.datetime.strftime('%d/%m/%Y')), json.dumps(c.comment)) for c in objs ]
     js_comments = '[%s]' % ','.join(l)
     
-    js_text = 'res:{ rpt:%s,dist:%s,scty:%s,cat:%s,comm:%s }' % ( js_rpt, js_districts, js_subcty, js_cat, js_comments )
+    js_text = 'res:{ rpt:%s,dist:%s,cat:%s,comm:%s }' % ( js_rpt, js_districts, js_cat, js_comments )
     
     return ajax_success('OK', js_text)

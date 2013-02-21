@@ -47,7 +47,7 @@ function editrpt(rid) {
 				var o = eval('('+ r.responseText +')');
 				var rpt = o.res.rpt;
 				var dist = o.res.dist;
-				var scty = o.res.scty;
+				//var scty = o.res.scty;
 				var cat = o.res.cat;
 				var comm = o.res.comm;
 				
@@ -55,10 +55,11 @@ function editrpt(rid) {
 				for(var i=0; i<dist.length; i++) {
 					doptions += '<option value="'+dist[i].id+'"'+(dist[i].id==rpt.district_id?' selected="selected"':'')+'>'+dist[i].name+'</option>';
 				}
+				/*
 				var soptions='';
 				for(var i=0; i<scty.length; i++) {
 					soptions += '<option value="'+scty[i].id+'"'+(scty[i].id==rpt.subcounty_id?' selected="selected"':'')+'>'+scty[i].name+'</option>';
-				}
+				}*/
 				var cathtml = '';
 				if(cat.length) {
 					for(var i=0; i<cat.length; i++) {
@@ -76,7 +77,7 @@ function editrpt(rid) {
 					}
 					comments = '<div style="padding-top:5px"><strong>Current Comments</strong>:<br/>'+comments+'</div>';
 				}
-				var html = '<div class="report"><form id="rptform"><table border="0" cellpadding="0" cellspacing="0"><tr><td colspan="2"><div class="rpt-title">Submitted by <span style="color:#ff6600;font-weight:bold">'+rpt.sender+'</span> on <span style="color:#ff6600;font-weight:bold">'+rpt.date+'</span></div></td></tr><tr><td><div class="rpt-label">Report</div><div><textarea id="report" name="report" class="rpt-ta">'+rpt.report+'</textarea></div></td><td><div class="rpt-label">Accused</div><div><textarea id="subject" name="subject" class="rpt-ta">'+rpt.accused+'</textarea></div></td></tr><tr><td><div class="rpt-label">Amount</div><div><input type="text" id="amount" name="amount" value="'+rpt.amount+'" /><br/>(User reported: '+rpt.amount_ff+')</div></td><td><div class="rpt-label">Date of Incident</div><div><input type="text" id="date" name="whendatetime" style="cursor:pointer" title="Click to choose date" readonly="readonly" value="'+rpt.when+'"/><br/>(User reported: '+rpt.when_ff+')</div></td></tr><tr><td><div class="rpt-label">District</div><div><select id="dist" name="district" class="rpt-list">'+doptions+'</select></div></td><td><div class="rpt-label">Subcounty</div><div><select id="subcounty" name="subcounty" class="rpt-list">'+soptions+'</select><br/>(User reported: '+rpt.sc_ff+')</div></td></tr><tr><td><div class="rpt-label">Category</div><div>'+cathtml+'</div></td><td><div class="rpt-label">Comments</div><div><textarea id="comments" name="comments" class="rpt-ta"></textarea><input type="hidden" name="id" value="'+rid+'" /><input type="hidden" name="csrfmiddlewaretoken" value="'+getCookie('csrftoken')+'" /></div>'+comments+'</td></tr></table></form></div>';
+				var html = '<div class="report"><form id="rptform"><table border="0" cellpadding="0" cellspacing="0"><tr><td colspan="2"><div class="rpt-title">Submitted by <span style="color:#ff6600;font-weight:bold">'+rpt.sender+'</span> on <span style="color:#ff6600;font-weight:bold">'+rpt.date+'</span></div></td></tr><tr><td><div class="rpt-label">Report</div><div><textarea id="report" name="report" class="rpt-ta">'+rpt.report+'</textarea></div></td><td><div class="rpt-label">Accused</div><div><textarea id="subject" name="subject" class="rpt-ta">'+rpt.accused+'</textarea></div></td></tr><tr><td><div class="rpt-label">Amount</div><div><input type="text" id="amount" name="amount" value="'+rpt.amount+'" /><br/>(User reported: '+rpt.amount_ff+')</div></td><td><div class="rpt-label">District</div><div><select id="dist" name="district" class="rpt-list">'+doptions+'</select><!--br/>(User reported: '+rpt.district_ff+')--></div></td></tr><tr><td><div class="rpt-label">Place of Incident</div><div><textarea id="where" name="where" class="rpt-ta">'+rpt.where+'</textarea></div></td><td><div class="rpt-label">Name of Reporter</div><div><textarea id="names" name="names" class="rpt-ta">'+rpt.names+'</textarea></div></td></tr><tr><td><div class="rpt-label">Category</div><div>'+cathtml+'</div></td><td><div class="rpt-label">Comments</div><div><textarea id="comments" name="comments" class="rpt-ta"></textarea><input type="hidden" name="id" value="'+rid+'" /><input type="hidden" name="csrfmiddlewaretoken" value="'+getCookie('csrftoken')+'" /></div>'+comments+'</td></tr></table></form></div>';
 				
 				var title = 'User Report Details';
 				var btns = [{text:'Submit', click:function(){ update_rpt(rid); }}]
@@ -105,7 +106,8 @@ function update_rpt(rid) {
                 if(r.readyState == 4){
 			ajax_done();
 			if(r.status != 200) {
-				alert(r.statusText);
+				//alert(r.statusText);
+				alert(r.responseText);
 				return;
 			}
 			// success reload page

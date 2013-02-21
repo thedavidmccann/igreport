@@ -47,64 +47,44 @@ def show_reports(request, **kwargs):
 @require_POST
 @login_required
 def submit_report(request, report_id):
+    
     try:
-        valid_categories = False
-        valid_district = False
-
         report = get_object_or_404(IGReport, pk=long(report_id))
         report.categories.clear()
+        
         if 'category' in request.POST and request.POST['category']:
             for category in request.POST.getlist('category'):
-                report.categories.add(Category.objects.get(id=long(category)))
-
-        valid_categories = True
-
+                try:
+                    report.categories.add(Category.objects.get(id=long(category)))
+                except Category.DoesNotExist:
+                    return HttpResponse('Invalid category ID', status=400)
+                
         if 'district' in request.POST and request.POST['district']:
-            report.district = Location.objects.get(id=long(request.POST['district']))
-        else:
-            report.district = None
-
-        valid_district = True
-        if 'subcounty' in request.POST and request.POST['subcounty']:
-            report.subcounty = Location.objects.get(id=long(request.POST['subcounty']))
-        else:
-            report.subcounty = None
-
+            try:
+                report.district = Location.objects.get(id=long(request.POST['district']))
+            except Location.DoesNotExist:
+                return HttpResponse('Invalid District ID', status=400)
+            
         if 'comments' in request.POST:
             for comment in request.POST.getlist('comments'):
-                report.comments.create(user=request.user, comment=comment)
+                if comment:
+                    report.comments.create(user=request.user, comment=comment)
 
         report.subject = request.POST['subject'] if 'subject' in request.POST else ''
         report.report = request.POST['report'] if 'report' in request.POST else ''
-        valid_date = False
-        if 'whendatetime' in request.POST and request.POST['whendatetime']:
-            report.when_datetime = datetime.strptime(request.POST['whendatetime'], '%m/%d/%Y')
-        else:
-            report.when_datetime = None
-        valid_date = True
-
+        report.where = request.POST['where'] if 'where' in request.POST else ''
+        report.names = request.POST['names'] if 'names' in request.POST else ''
+        
         if 'amount' in request.POST:
-            report.amount = float(request.POST['amount'])
-        else:
-            report.amount = None
-
+            try:
+                report.amount = float(request.POST['amount'])
+            except ValueError:
+                return HttpResponse('Invalid Amount', status=400)
+            
         report.save()
-    except ValueError:
-        if valid_date:
-            return HttpResponse('amount', status=400)
-        else:
-            return HttpResponse('whendatetime', status=400)
-    except Location.DoesNotExist:
-        if valid_district:
-            if valid_categories:
-                return HttpResponse('subcounty', status=400)
-            else:
-                return HttpResponse('category', status=400)
-        else:
-            return HttpResponse('district', status=400)
-    except Category.DoesNotExist:
-        return HttpResponse('category', status=400)
-
-    return HttpResponse('OK',
-            status=200)
+        
+    except Exception as err:
+        return HttpResponse(err.__str__(), status=500)
+    
+    return HttpResponse('OK', status=200)
 
