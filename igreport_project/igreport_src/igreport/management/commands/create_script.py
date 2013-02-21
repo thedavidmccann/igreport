@@ -154,12 +154,12 @@ class Command(BaseCommand):
                     line = clines[i]
                     if not re.search('=', line):
                         error = 'Invalid line "%s" found in conf file' % line
-                        return lib.error(error, log_error=True)
+                        raise Exception(error)
                     parts = re.compile('\s*=\s*').split(line)
     
                     if len(parts) < 2:
                         error = 'Invalid line "%s" found in conf file' % line
-                        return lib.error(error, log_error=True)
+                        raise Exception(error)
     
                     option = parts.pop(0)
                     params[option] = re.compile('^.*=\s*').sub('', line)
