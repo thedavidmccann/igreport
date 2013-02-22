@@ -7,6 +7,7 @@ from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST, require_GET
 from rapidsms.contrib.locations.models import Location, LocationType
+from rapidsms.router.api import send
 from igreport.models import IGReport, Category, Comment
 
 def ajax_success(msg=None, js_=None):
@@ -64,3 +65,24 @@ def get_report(request, report_id):
     js_text = 'res:{ rpt:%s,dist:%s,cat:%s,comm:%s }' % ( js_rpt, js_districts, js_cat, js_comments )
     
     return ajax_success('OK', js_text)
+
+@login_required
+@require_POST
+@never_cache
+def send_sms(request, report_id):
+
+    report = get_object_or_404(IGReport, pk=report_id)
+    
+    if not request.POST.has_key('text'):
+        return HttpResponse('Message not specified')
+
+    text = request.POST['text'].strip()
+    if not text or len(text) < 2:
+        return HttpResponse('Message too short/not valid')
+
+    try:
+        send(text, backend_name=None, identity=None, connection=report.connection)
+    except Exception as err:
+        return HttpResponse(err.__str__(), status=500)
+
+    return ajax_success()

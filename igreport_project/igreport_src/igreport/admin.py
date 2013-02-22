@@ -34,10 +34,17 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
 
     def message(self, obj):
         text = obj.report
+        width = ''
         if len(text) > 50:
-            html = '<div style="width:300px">%s</div>' % text
+            width = '300px'
         else:
-            html=text
+            html = text
+        style = ''
+        if width:
+            style += 'width:%s;' % width
+        if style:
+            style = ' style="%s"' % style
+        html = '<div id="rpt_%s"%s>%s</div>' % (obj.id, style, text)
         return html
 
     message.short_description = 'Report'
@@ -45,10 +52,14 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
 
     def sender(self, obj):
         msisdn = obj.connection.identity
-        return msisdn
-
+        t = (obj.id, msisdn, msisdn, msisdn)
+        html = '<a href="" onclick="smsp(%s,\'%s\');return false;" \
+               style="font-weight:bold" title="Click to Send SMS to %s">%s</a>' % t
+        return html
+    
     sender.short_description = 'Sender'
     sender.admin_order_field = 'connection'
+    sender.allow_tags = True
 
     def amount_formatted(self, obj):
         if obj.amount:

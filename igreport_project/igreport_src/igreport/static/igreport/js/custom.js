@@ -85,8 +85,8 @@ function editrpt(rid) {
 				document.getElementById('jqpopup').innerHTML = html;
 				jqpopup(title, btns, 850, 450);
 				
-				$.datepicker.setDefaults({ dateFormat: 'mm/dd/yy' });
-				$("#date").datepicker();
+				//$.datepicker.setDefaults({ dateFormat: 'mm/dd/yy' });
+				//$("#date").datepicker();
 			}
 		}
 	}
@@ -141,8 +141,66 @@ function syncit(rid) {
 	}
 	r.send('csrfmiddlewaretoken='+getCookie('csrftoken'));
 }
+
+function smsp(id, msisdn) {
+	
+	var title = 'Send SMS to ' + msisdn;
+	var btns = [{text:'Send SMS', click:function(){ send_(); }}]
+	var txt = document.getElementById('rpt_' + id).innerHTML;
+	
+	var html = '<form id="msgf"><div style="padding:30px 0px 0px 30px">\
+	    <div class="rpt-label">User Report</div><div style="padding-bottom:20px">' + txt + '</div>\
+	    <div class="rpt-label">SMS Message</div><div><textarea name="message" rows="5" cols="50" class="rpt-ta-general" onkeydown="track_msg_len(this)" onkeyup="track_msg_len(this)"></textarea><br/>\
+	    <input type="text" size="10" id="id_chars" readonly="readonly" value="0 Chars" style="color:#666" />\
+	    <input type="hidden" name="id" value="'+id+'" /><input type="hidden" name="msisdn" value="'+msisdn+'" />\
+	    </div>\
+	</div></form>';				
+	document.getElementById('jqpopup').innerHTML = html;
+	jqpopup(title, btns, 600, 300);	
+};
+
+function send_() {
+	var f = document.getElementById('msgf');
+	if(f.message.value.length < 2) {
+		alert('Specify a valid message to send');
+		return;
+	}
+	ajax_wait('Sending SMS to ' + f.msisdn.value + '. Please wait ..');
+	
+	var r = createHttpRequest();
+        r.open('POST', '/igreports/' + f.id.value + '/sms/', true);
+        r.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		
+	r.onreadystatechange = function() {
+		if(r.readyState == 4) {
+			ajax_done();
+			if(r.status != 200) {
+				alert(r.statusText);
+				return;
+			}
+			alert('SMS Successfuly sent to ' + f.msisdn.value);
+			$('#jqpopup').dialog('destroy');
+			//window.location.replace(window.location);
+		}
+	}
+	r.send('message='+encodeURIComponent(f.message.value)+'&csrfmiddlewaretoken='+getCookie('csrftoken'));	
+}
+
 function rptsetc() {
 	//alert('setting color!');
+};
+
+function track_msg_len(f) {
+	var limit = 160;
+	if(f.value.length == 0) {
+		document.getElementById('id_chars').value = '0 Chars';
+		return;
+	}
+	if(f.value.length > limit) {
+		f.value = (f.value).substr(0, limit);
+		document.getElementById('id_chars').value = limit + ' Chars';
+	}
+	document.getElementById('id_chars').value = f.value.length + ' Chars';
 };
 
 function getCookie(name) {

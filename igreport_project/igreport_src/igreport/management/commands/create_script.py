@@ -1,12 +1,9 @@
-import re
-import os
-import sys
 from django.conf import settings
 from django.db import transaction
 from django.core.management.base import BaseCommand
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
-
+from igreport import questions
 from script.models import Script, ScriptStep
 from poll.models import Poll
 
@@ -14,26 +11,7 @@ class Command(BaseCommand):
     
     def handle(self, *files, **options):
         
-        if not files:
-            cwd = os.getcwd()
-            conf_file = '%s/script.conf' % cwd
-            if not os.path.exists(conf_file):
-                print 'Specify a script configuration file -> ' + conf_file
-                return
-        else:
-            conf_file = files[0]
-        
-        if not os.path.exists(conf_file):
-            print 'Configuration file "%s" does not exist' % conf_file
-            return
-        
-        if not os.path.isfile(conf_file):
-            print '"%s" is not a valid regular file' % conf_file
-            return
-        
-        print 'reading configuration from "%s" ..' % conf_file
-        
-        conf = self.read_conf_file(conf_file)
+        conf = questions.translations
         user = User.objects.all()[0]
         site = Site.objects.get_current()
         
@@ -114,63 +92,4 @@ class Command(BaseCommand):
             except Exception as err:
                 transaction.rollback()
                 print 'ERROR: %s\n****No changes made to database' % err.__str__()
-             
-    """
-    Read configuration file containing languages
-    @param string conf_file         The configuration file to read
-    """
-    def read_conf_file(self, conf_file):
-        try:
-            fh = open(conf_file, 'r')
-            lines = fh.readlines()
-            fh.close()
-    
-            clines = list()
-            for line in lines:
-                line = line.strip()
-                if re.search('^;', line) or not line:
-                    continue
-                clines.append(line)
-    
-            i = 0
-            conf = dict()
-    
-            while i < len(clines):
-                if not re.search('^\[.*\]', clines[i]):
-                    # XXX: not expected
-                    i += 1
-                    continue
-    
-                # section
-                sec = re.compile('\[|\]').sub('', clines[i])
-    
-                params = dict()
-                i += 1
-                if i >= len(clines): break
-    
-                while i < len(clines):
-                    if re.search('^\[.*\]', clines[i]):
-                        break
-                    line = clines[i]
-                    if not re.search('=', line):
-                        error = 'Invalid line "%s" found in conf file' % line
-                        raise Exception(error)
-                    parts = re.compile('\s*=\s*').split(line)
-    
-                    if len(parts) < 2:
-                        error = 'Invalid line "%s" found in conf file' % line
-                        raise Exception(error)
-    
-                    option = parts.pop(0)
-                    params[option] = re.compile('^.*=\s*').sub('', line)
-    
-                    i += 1
-                # /end while
-                conf[sec] = params
-            # /end while
-        except Exception as err:
-            print err.__str__()
-            sys.exit()
-    
-        return conf
 
