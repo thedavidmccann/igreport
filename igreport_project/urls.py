@@ -28,7 +28,7 @@ urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
 
     url('^$', direct_to_template, {'template':'igreport/index.html'}),
-    url('^login$', require_POST(login)),
+    url('^login$', require_POST(login), {'template_name':'igreport/index.html'}),
     url('^logout$', require_POST(logout)),
     (r'^accounts/login/$', direct_to_template, {'template':'igreport/login.html'}),
 

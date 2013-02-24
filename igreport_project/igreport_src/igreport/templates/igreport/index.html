@@ -11,6 +11,11 @@
        		</div>
         	<div class="span6">
         		<p>
+        			<ul>
+        			{% for e in form.non_field_errors %}
+        				<li>{{ e }}</li>	
+       				{% endfor %}
+       				</ul>
         			Lorem Ibsum
         		</p>
         	</div>
