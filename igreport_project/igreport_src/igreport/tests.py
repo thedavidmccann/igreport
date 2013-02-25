@@ -109,7 +109,7 @@ class ModelTest(TestCase):  # pragma: no cover
     
     def test_keyword_correct(self):
         # TestCase: Ensure keywords are matched and user placed in script
-        text = 'CORrUPT'
+        text = 'CORrUPt'
         self.fake_incoming(text, self.connection)
         self.assertEquals(ScriptProgress.objects.count(), 1)
         
@@ -119,13 +119,13 @@ class ModelTest(TestCase):  # pragma: no cover
         self.assertTrue(scriptProgress.script.slug.endswith(report.connection.contact.language))
         
         # TestCase: Ensure user sending in correct keyword second time does not get "double-added" to script
-        text='corrupt'
+        text = 'corrupt'
         self.fake_incoming(text, self.connection)
         self.assertEquals(ScriptProgress.objects.count(), 1)
     
     def test_keyword_misspelled(self):
-        # Testcase: If a user sends in a misspelled they are placed
-        # in a script
+        # Testcase: If a user sends in a misspelled keyword, they 
+        # are placed in a script
         
         text = 'CORUPT'
         self.fake_incoming(text, self.connection)
