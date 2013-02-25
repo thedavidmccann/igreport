@@ -15,6 +15,7 @@ from script.signals import script_progress_was_completed
 from script.utils.outgoing import check_progress
 from django.core.management import call_command
 import datetime
+from django.conf import settings
 
 class ModelTest(TestCase):  # pragma: no cover
 
@@ -35,7 +36,8 @@ class ModelTest(TestCase):  # pragma: no cover
         Location.objects.create(name="Busia", type=LocationType.objects.create(name="district", slug="district"))
         Location.objects.create(name="Gwinnett", type=LocationType.objects.create(name="sub_county", slug="sub_county"))
 
-        call_command('create_hotline_script')
+        #call_command('create_hotline_script')
+        call_command('create_script')
 
     def fake_incoming(self, message, connection):
         self.router.handle_incoming(connection.backend.name, connection.identity, message)
@@ -63,7 +65,7 @@ class ModelTest(TestCase):  # pragma: no cover
             script_progress_was_completed.send(connection=connection, sender=script_prog)
         return ss
 
-    def test_igreport(self):
+    def _test_igreport(self):
 
         report = 'there are many snakes in BUSIA'
         name = 'SNAKES, MAN!'
@@ -93,3 +95,40 @@ class ModelTest(TestCase):  # pragma: no cover
         self.assertEquals(ig_report.district, Location.objects.get(type__name='district'))
         self.assertEquals(ig_report.when_freeform, when)
 
+    def test_keyword_incorrect(self):
+        
+        # TestCase: Ensure user is NOT placed into the script if they have not
+        # sent in a recoginized keyword
+        text = 'hello?Is this the correct IG Hotline?'
+        self.fake_incoming(text, self.connection)        
+        self.assertEquals(ScriptProgress.objects.count(), 0)
+        
+        # TestCase: Ensure user got the default response
+        message = Message.objects.filter(direction='O', connection=self.connection).order_by('-id')[0]
+        self.assertEquals(message.text, settings.DEFAULT_RESPONSE)
+    
+    def test_keyword_correct(self):
+        # TestCase: Ensure keywords are matched and user placed in script
+        text = 'CORrUPT'
+        self.fake_incoming(text, self.connection)
+        self.assertEquals(ScriptProgress.objects.count(), 1)
+        
+        # TestCase: Ensure user is placed in appropriate script
+        report = IGReport.objects.all().order_by('-id')[0]
+        scriptProgress = ScriptProgress.objects.all()[0]
+        self.assertTrue(scriptProgress.script.slug.endswith(report.connection.contact.language))
+        
+        # TestCase: Ensure user sending in correct keyword second time does not get "double-added" to script
+        text='corrupt'
+        self.fake_incoming(text, self.connection)
+        self.assertEquals(ScriptProgress.objects.count(), 1)
+    
+    def test_keyword_misspelled(self):
+        # Testcase: If a user sends in a misspelled they are placed
+        # in a script
+        
+        text = 'CORUPT'
+        self.fake_incoming(text, self.connection)
+        self.assertEquals(ScriptProgress.objects.count(), 1)
+        
+        

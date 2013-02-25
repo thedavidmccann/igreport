@@ -74,11 +74,11 @@ def send_sms(request, report_id):
     report = get_object_or_404(IGReport, pk=report_id)
     
     if not request.POST.has_key('text'):
-        return HttpResponse('Message not specified')
+        return HttpResponse('Message not specified', status=400)
 
     text = request.POST['text'].strip()
     if not text or len(text) < 2:
-        return HttpResponse('Message too short/not valid')
+        return HttpResponse('Message too short/not valid', status=400)
 
     try:
         send(text, backend_name=None, identity=None, connection=report.connection)

@@ -13,9 +13,10 @@ class App(AppBase):
     
     def handle (self, message):
         entry = ScriptProgress.objects.filter(script__slug__startswith='hotline_script', connection=message.connection)
-
+        text = (message.text).lower()
+        
         if (not entry.exists()):
-            matches = difflib.get_close_matches(message.text, settings.REPORT_KEYWORDS.keys(), 1)
+            matches = difflib.get_close_matches(text, settings.REPORT_KEYWORDS.keys(), 1)
 
             if not matches:
                 return False
