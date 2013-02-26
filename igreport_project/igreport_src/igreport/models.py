@@ -37,7 +37,7 @@ class IGReport(models.Model):
     connection = models.ForeignKey(Connection)
     completed = models.BooleanField(default=False)
     synced = models.BooleanField(default=False)
-    datetime = models.DateTimeField(auto_now_add=True, editable=False, verbose_name='Report Date')
+    datetime = models.DateTimeField(auto_now_add=True, verbose_name='Report Date')
     keyword = models.TextField(blank=True, null=True, default=None)
     report = models.TextField()
     subject = models.TextField(blank=True, null=True, default=None)

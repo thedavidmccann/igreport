@@ -117,6 +117,9 @@ function update_rpt(rid) {
 };
 
 function syncit(rid) {
+	//if(!confirm('Sync Report?')) {
+	//	return;
+	//}
 	ajax_wait('Syncing Report. Please wait ..');
 	
 	var r = createHttpRequest();

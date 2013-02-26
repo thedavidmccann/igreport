@@ -10,9 +10,10 @@ from igreport.html.admin import ListStyleAdmin
 
 class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
 
-    list_display = ['message', 'accused', 'amount_formatted', 'sender', 'report_time', 'options']
+    list_display = ['sender', 'message', 'accused', 'amount_formatted', 'report_time', 'options']
     list_filter = ['datetime']
-    #date_hierarchy = ['datetime']
+    ordering = ['synced', '-datetime']
+    #date_hierarchy = ['datetime'] # causes strange "ImproperlyConfigured" exception
     search_fields = ['reference_number', 'connection__identity']
     actions = None
     Media = media.JQueryUIMedia
@@ -109,10 +110,7 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
     def changelist_view(self, request, extra_context=None):
         title = 'Reports'
 
-        buttons = [ {'label': 'All Reports', 'link': '?'},
-                {'label': 'Completed', 'link': '?completed=1'},
-                {'label': 'Synced', 'link': '?synced=1'},
-                {'label': 'Refresh', 'link': '?'} ]
+        buttons = [ {'label': 'Refresh', 'link': ''}, {'label': 'All Reports', 'link': '?'}, {'label': 'Completed', 'link': '?completed=1'}, {'label': 'Synced', 'link': '?synced=1'} ]
         context = {'title': title, 'include_file':'igreport/report.html', 'bottom_js':'rptsetc()', 'buttons': buttons}
         return super(IGReportAdmin, self).changelist_view(request, extra_context=context)
 
@@ -183,7 +181,10 @@ class UserProfileForm(ModelForm):
 class UserProfileAdmin(admin.ModelAdmin):
     form = UserProfileForm
 
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ['name', 'description']
+    
 admin.site.register(IGReport, IGReportAdmin)
 admin.site.register(UserProfile, UserProfileAdmin)
-admin.site.register(Category)
+admin.site.register(Category, CategoryAdmin)
 admin.site.register(Unprocessed, UnprocessedAdmin)
