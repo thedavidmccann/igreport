@@ -170,7 +170,7 @@ function send_() {
 		if(r.readyState == 4) {
 			ajax_done();
 			if(r.status != 200) {
-				alert(r.statusText);
+				alert(r.responseText);
 				return;
 			}
 			alert('SMS Successfuly sent to ' + f.msisdn.value);
@@ -178,7 +178,7 @@ function send_() {
 			//window.location.replace(window.location);
 		}
 	}
-	r.send('message='+encodeURIComponent(f.message.value)+'&csrfmiddlewaretoken='+getCookie('csrftoken'));	
+	r.send('text='+encodeURIComponent(f.message.value)+'&csrfmiddlewaretoken='+getCookie('csrftoken'));	
 }
 
 function rptsetc() {

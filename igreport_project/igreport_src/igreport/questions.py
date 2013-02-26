@@ -5,11 +5,11 @@
 translations = {
     'eng': dict(
         COMPLAINT_QUESTION = 'Expose Corruption toll free service, what is your complaint?',
-        ACCUSED_QUESTION = 'Please answer with ONLY the name of the person and Organisation you are reporting?',
-        DISTRICT_QUESTION = 'Please send me ONLY the name of the district where the person works?',
+        ACCUSED_QUESTION = 'Please give the name of the person and Organisation you are reporting ONLY',
+        DISTRICT_QUESTION = 'Please send the district where the person works ONLY',
         AMOUNT_QUESTION = 'What was involved (if money, how much)?',
         NAME_QUESTION = 'What is your Name?',
-        CONFIRMATION_MESSAGE = 'Your complaint has been recorded. Thank you. Your SMS Complaint # is: <NUMBER>. For further queries please call 0414123456'
+        CONFIRMATION_MESSAGE = 'Your complaint has been recorded. Your Complaint/ref No is <NUMBER>. For further queries call 0414347387. Thank you'
     ),
     'lug': dict(
         COMPLAINT_QUESTION = 'Loopa obulyaake kubwerere. Olina kwemulugunya ki?',

@@ -9,6 +9,7 @@ from rapidsms.contrib.locations.models import Location
 from script.signals import script_progress_was_completed
 from .signal_handlers import handle_report, igreport_pre_save
 from django.db.models.signals import pre_save
+from rapidsms_httprouter.models import Message
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
@@ -50,6 +51,12 @@ class IGReport(models.Model):
     class Meta:
         verbose_name = 'Report'
         verbose_name_plural = 'Reports'
+
+class Unprocessed(Message):
+    class Meta:
+        proxy = True
+        verbose_name = 'Unprocessed Message'
+        verbose_name_plural = 'Unprocessed Messages'
 
 script_progress_was_completed.connect(handle_report, weak=False)
 pre_save.connect(igreport_pre_save, sender=IGReport, weak=False)
