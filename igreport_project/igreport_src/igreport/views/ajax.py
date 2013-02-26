@@ -27,7 +27,7 @@ def get_report(request, report_id):
 
     r = get_object_or_404(IGReport, pk=report_id)
 
-    js = dict(accused = r.subject or '', report = r.report or '', amount_ff = r.amount_freeform or '', amount = str(int(r.amount)) if r.amount else '', district_id = r.district_id or  '', date = r.datetime.strftime('%d/%m/%Y %H:%M'), sender= r.connection.identity, where = r.where or '', names = r.names or '')
+    js = dict(accused = r.subject or '', report = r.report or '', amount_ff = r.amount_freeform or '', amount = str(int(r.amount)) if r.amount>=0 else '', district_id = r.district_id or  '', date = r.datetime.strftime('%d/%m/%Y %H:%M'), sender= r.connection.identity, names = r.names or '')
     js_rpt = simplejson.dumps(js)
 
     ''' get districts '''

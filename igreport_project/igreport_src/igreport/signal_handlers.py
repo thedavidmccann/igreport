@@ -19,9 +19,6 @@ def handle_report(**kwargs):
     accused_poll = Poll.objects.get(scriptstep__script__slug=slug, name='hotline_accused')
     amount_poll = Poll.objects.get(scriptstep__script__slug=slug, name='hotline_amount')
     district_poll = Poll.objects.get(scriptstep__script__slug=slug, name='hotline_district')
-    #subcounty_poll = Poll.objects.get(scriptstep__script__slug=slug, name='hotline_subcounty')
-    #when_poll = Poll.objects.get(scriptstep__script__slug=slug, name='hotline_when')
-    where_poll = Poll.objects.get(scriptstep__script__slug=slug, name='hotline_where')
     names_poll = Poll.objects.get(scriptstep__script__slug=slug, name='hotline_name')
 
     progress = kwargs['sender']
@@ -29,22 +26,15 @@ def handle_report(**kwargs):
 
     report.report = find_best_response(session, report_poll)
     report.subject = find_best_response(session, accused_poll)
-    #report.district_freeform = find_best_response(session, district_poll)
     report.district = find_best_response(session, district_poll)
     report.amount_freeform = find_best_response(session, amount_poll)
-    report.where = find_best_response(session, where_poll)
     report.names = find_best_response(session, names_poll)
     
-    """
-    report.subcounty_freeform = find_best_response(session, subcounty_poll)
-    if report.subcounty_freeform:
-        report.subcounty = find_closest_match(report.subcounty_freeform, Location.objects.filter(type__name='sub_county'))
-    """
     report.save()
 
 def igreport_pre_save(sender, **kwargs):
     instance = kwargs['instance']
-    if instance.pk and len(instance.categories.all()) and instance.district and instance.where and instance.names and instance.amount:
+    if instance.pk and len(instance.categories.all()) and instance.subject and instance.report and instance.district and instance.names and (instance.amount >= 0):
         instance.completed = True
     else:
         instance.completed = False

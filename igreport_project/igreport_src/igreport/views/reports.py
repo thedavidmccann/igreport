@@ -72,7 +72,6 @@ def submit_report(request, report_id):
 
         report.subject = request.POST['subject'] if 'subject' in request.POST else ''
         report.report = request.POST['report'] if 'report' in request.POST else ''
-        report.where = request.POST['where'] if 'where' in request.POST else ''
         report.names = request.POST['names'] if 'names' in request.POST else ''
         
         if 'amount' in request.POST:

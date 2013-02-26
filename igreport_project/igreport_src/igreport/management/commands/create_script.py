@@ -25,14 +25,13 @@ class Command(BaseCommand):
                     not params.has_key('ACCUSED_QUESTION') or \
                     not params.has_key('AMOUNT_QUESTION') or \
                     not params.has_key('DISTRICT_QUESTION') or \
-                    not params.has_key('WHERE_QUESTION') or \
                     not params.has_key('NAME_QUESTION') or \
                     not params.has_key('CONFIRMATION_MESSAGE'):
                         raise Exception('Configuration for language "%s" is incomplete' % language)
                     
                     print '************ [%s] Language configuration ************' % language
-                    t = (params['COMPLAINT_QUESTION'], params['ACCUSED_QUESTION'], params['AMOUNT_QUESTION'], params['DISTRICT_QUESTION'], params['WHERE_QUESTION'], params['NAME_QUESTION'], params['CONFIRMATION_MESSAGE'])
-                    print 'COMPLAINT_QUESTION: %s\nACCUSED_QUESTION: %s\nAMOUNT_QUESTION: %s\nDISTRICT_QUESTION: %s\nWHERE_QUESTION: %s\nNAME_QUESTION: %s\nCONFIRMATION_MESSAGE: %s\n' % t
+                    t = (params['COMPLAINT_QUESTION'], params['ACCUSED_QUESTION'], params['DISTRICT_QUESTION'], params['AMOUNT_QUESTION'], params['NAME_QUESTION'], params['CONFIRMATION_MESSAGE'])
+                    print 'COMPLAINT_QUESTION: %s\nACCUSED_QUESTION: %s\nDISTRICT_QUESTION: %s\nAMOUNT_QUESTION: %s\nNAME_QUESTION: %s\nCONFIRMATION_MESSAGE: %s\n' % t
                     
                     slug_name = 'hotline_script_%s' % language
                     description = 'IGReport Hotline Script (%s)' % language
@@ -55,37 +54,30 @@ class Command(BaseCommand):
                     accused_step = ScriptStep.objects.create(script=script, order=1, message='', poll=accused_poll, rule=ScriptStep.RESEND_MOVEON, \
                                     start_offset=0, retry_offset=3600, giveup_offset=3600, num_tries=1)
                     script.steps.add(accused_step)
+                    
+                    # District question
+                    district_poll = Poll.objects.create(name='hotline_district', user=user, question=params['DISTRICT_QUESTION'], type=Poll.TYPE_LOCATION, default_response='')
+                    district_poll.sites.add(Site.objects.get_current())
+                    district_step = ScriptStep.objects.create(script=script, order=2, poll=district_poll, message='', rule=ScriptStep.STRICT_MOVEON, \
+                                         start_offset=0, retry_offset=3600, num_tries=1, giveup_offset=3600)
+                    script.steps.add(district_step)
             
                     # Amount involved
                     amount_poll = Poll.objects.create(name='hotline_amount', user=user, question=params['AMOUNT_QUESTION'], type=Poll.TYPE_TEXT, default_response='')
                     amount_poll.sites.add(Site.objects.get_current())
-                    amount_step = ScriptStep.objects.create(script=script, order=2, poll=amount_poll, rule=ScriptStep.STRICT_MOVEON, \
+                    amount_step = ScriptStep.objects.create(script=script, order=3, poll=amount_poll, rule=ScriptStep.STRICT_MOVEON, \
                                         start_offset=0, retry_offset=3600, num_tries=1, giveup_offset=3600)
                     script.steps.add(amount_step)
-            
-                    # District question
-                    district_poll = Poll.objects.create(name='hotline_district', user=user, question=params['DISTRICT_QUESTION'], type=Poll.TYPE_LOCATION, default_response='')
-                    district_poll.sites.add(Site.objects.get_current())
-                    district_step = ScriptStep.objects.create(script=script, order=3, poll=district_poll, message='', rule=ScriptStep.STRICT_MOVEON, \
-                                         start_offset=0, retry_offset=3600, num_tries=1, giveup_offset=3600)
-                    script.steps.add(district_step)
-            
-                    # Where did it happen?
-                    where_poll = Poll.objects.create(name='hotline_where', user=user, question=params['WHERE_QUESTION'], type=Poll.TYPE_TEXT)
-                    where_poll.sites.add(Site.objects.get_current())
-                    where_step = ScriptStep.objects.create(script=script, order=4, poll=where_poll, message='', rule=ScriptStep.RESEND_MOVEON, \
-                                    start_offset=0, retry_offset=3600, num_tries=1, giveup_offset=3600)
-                    script.steps.add(where_step)
                     
                     # What is your name
                     name_poll = Poll.objects.create(name='hotline_name', user=user, question=params['NAME_QUESTION'], type=Poll.TYPE_TEXT)
                     name_poll.sites.add(Site.objects.get_current())
-                    name_step = ScriptStep.objects.create(script=script, order=5, poll=name_poll, message='', rule=ScriptStep.RESEND_MOVEON, \
+                    name_step = ScriptStep.objects.create(script=script, order=4, poll=name_poll, message='', rule=ScriptStep.RESEND_MOVEON, \
                                     start_offset=0, retry_offset=3600, num_tries=1, giveup_offset=3600)
                     script.steps.add(name_step)
             
                     # Thank the reporter, confirm receipt
-                    confirm_step = ScriptStep.objects.create(script=script, order=6, message=params['CONFIRMATION_MESSAGE'], rule=ScriptStep.WAIT_MOVEON, \
+                    confirm_step = ScriptStep.objects.create(script=script, order=5, message=params['CONFIRMATION_MESSAGE'], rule=ScriptStep.WAIT_MOVEON, \
                                        start_offset=0, giveup_offset=0)
                     script.steps.add(confirm_step)                    
                     #

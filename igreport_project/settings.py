@@ -4,15 +4,9 @@
 
 PROJECT_NAME = 'igreport'
 # message to send to user to help us determine in what language we should engage them
-DEFAULT_RESPONSE = 'To report in English, SMS the word "corrupt" to 6008. To report in Luganda, SMS the word "loopa"'
+DEFAULT_RESPONSE = 'To report in English, SMS the word "corrupt" to 6009. To report in Luganda, SMS the word "loopa"'
 REPORT_KEYWORDS = dict(corrupt='eng', corupt='eng', loopa='lug', lopa='lug')
 
-HOTLINE_NAME_QUESTION = "Thanks for your report.I have more questions and all answers are FREE.Please send us ONLY the name of the person or organization you're reporting on?"
-HOTLINE_AMOUNT_QUESTION = "What amount of money was involved?"
-HOTLINE_WHEN_QUESTION = "When did the event you are reporting happen?"
-HOTLINE_DISTRICT_QUESTION = "Please send us ONLY the name of your district?"
-HOTLINE_SUBCOUNTY_QUESTION = "Please send us ONLY the name of your sub county?"
-HOTLINE_CONFIRMATION_MESSAGE = "Your report has been recorded. Thank you."
 CMS_USER = 'cmsuser'
 CMS_PASSWORD = 'cmspass'
 CMS_URL = 'localhost:8008/sync/'
