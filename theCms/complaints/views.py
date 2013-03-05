@@ -60,10 +60,10 @@ def sync_report(request):
             district=District.objects.get(name__icontains=data['district']),
             status='OG',
             report=(data['report'] + ' :(%s)' % data['offences']),
+            complaint_reference=data['reference_number']
             )
             c.save()
 
-            resp['complaint_reference'] = c.complaint_reference
             resp['result'], resp['message'] = 'OK', 'Success'
 
             # TO DO: Handle other requirements for the CMS

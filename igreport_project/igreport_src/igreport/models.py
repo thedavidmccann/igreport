@@ -46,7 +46,10 @@ class IGReport(models.Model):
     amount_freeform = models.TextField(null=True, blank=True)
     amount = models.DecimalField(decimal_places=2, max_digits=26, null=True)
     names = models.TextField(null=True, blank=True)
-    reference_number = models.TextField(null=True, blank=True)
+
+    @property
+    def reference_number(self):
+        return "SMS/%d/%d/%d" % (self.id, self.datetime.month, self.datetime.year)
 
     class Meta:
         verbose_name = 'Report'
