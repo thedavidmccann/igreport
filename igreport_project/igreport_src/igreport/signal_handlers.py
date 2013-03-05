@@ -5,6 +5,8 @@
 from script.utils.handling import find_closest_match, find_best_response
 from script.models import ScriptSession
 from rapidsms.contrib.locations.models import Location
+from rapidsms_httprouter.models import Message
+from igreport.questions import translations
 from poll.models import Poll
 
 def handle_report(**kwargs):
@@ -32,6 +34,12 @@ def handle_report(**kwargs):
     connection.contact.name = report.names
     connection.contact.save()
     report.save()
+    Message.objects.create(\
+        direction='O', \
+        status='Q', \
+        connection=connection, \
+        application='script', \
+        text=(translations[connection.contact.language]['CONFIRMATION_MESSAGE'] % {'reference_number':report.reference_number}))
 
 def igreport_pre_save(sender, **kwargs):
     instance = kwargs['instance']
