@@ -5,16 +5,18 @@
 from script.utils.handling import find_closest_match, find_best_response
 from script.models import ScriptSession
 from rapidsms.contrib.locations.models import Location
+from rapidsms_httprouter.models import Message
+from igreport.questions import translations
 from poll.models import Poll
 
 def handle_report(**kwargs):
     from .models import IGReport
-    
+
     connection = kwargs['connection']
     report = IGReport.objects.filter(connection=connection).latest('datetime')
     language = report.connection.contact.language
     slug = 'hotline_script_%s' % language
-    
+
     report_poll = Poll.objects.get(scriptstep__script__slug=slug, name='hotline_complaint')
     accused_poll = Poll.objects.get(scriptstep__script__slug=slug, name='hotline_accused')
     amount_poll = Poll.objects.get(scriptstep__script__slug=slug, name='hotline_amount')
@@ -29,8 +31,15 @@ def handle_report(**kwargs):
     report.district = find_best_response(session, district_poll)
     report.amount_freeform = find_best_response(session, amount_poll)
     report.names = find_best_response(session, names_poll)
-    
+    connection.contact.name = report.names
+    connection.contact.save()
     report.save()
+    Message.objects.create(\
+        direction='O', \
+        status='Q', \
+        connection=connection, \
+        application='script', \
+        text=(translations[connection.contact.language]['CONFIRMATION_MESSAGE'] % {'reference_number':report.reference_number}))
 
 def igreport_pre_save(sender, **kwargs):
     instance = kwargs['instance']

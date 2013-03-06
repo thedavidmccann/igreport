@@ -2,6 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 # encoding=utf-8
 
+import urllib2
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -9,6 +10,7 @@ from django.views.decorators.http import require_POST
 from igreport.models import IGReport
 from django.utils import simplejson
 from django.conf import settings
+from datetime import date, datetime
 
 
 @require_POST
@@ -37,26 +39,31 @@ def sync_report(request, report_id):
     #  "username":"admin",
     #  "password":"admin"}
     if report.completed:
-        report_data = {}
-
-
-        report_data['accused'] = report.subject
-        report_data['accused_gender'] = 'N'  # don't collect gender
-        report_data['accused_ent_type'] = 'P'  # don't collect type
-        report_data['district'] = report.district.name
-        report_data['offences'] = ','.join(report.categories.values_list('name', flat=True))
-        report_data['username'] = settings.CMS_USER
-        report_data['password'] = settings.CMS_PASSWORD
-        report_data['complainant'] = report.connection.identity
-        report_data['report'] = report.report
-
-        # json doesn't know how to serialize datetimes, which means this sync code doesn't
-#         report_data['complaint_date'] = report.when_datetime
-
+        report_data = { \
+            'accused': report.subject,
+            'accused_gender': 'N',  # don't collect gender
+            'accused_ent_type': 'P',  # don't collect type
+            'district': report.district.name,
+            'offences': ','.join(report.categories.values_list('name', flat=True)),
+            'username': settings.CMS_USER,
+            'password': settings.CMS_PASSWORD,
+            'complainant': report.connection.identity,
+            'report': report.report,
+            'reference_number': report.reference_number,
+            'complaint_date': datetime.strftime(report.datetime, '%Y/%m/%d'),
+        }
         report_data = simplejson.dumps(report_data)
 
         cms_url = settings.CMS_URL
-        # POST here
+        req = urllib2.Request(cms_url, report_data)
+        response = urllib2.urlopen(req)
+        json_response = response.read()
+        json_object = simplejson.loads(json_response)
+
+        print "WOOHOO %s" % json_response
+
+        if (json_object['result'] != 'OK'):
+            return HttpResponse('', status={'PD':403, 'RC':404, 'IE':500}[json_object['result']])
 
         report.synced = True
         report.save()

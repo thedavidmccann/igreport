@@ -95,7 +95,7 @@ Now that the database (and also the Yo! integration, as a bonus) are configured,
 
     python manage.py syncdb
     python manage.py loaddata locations
-    python manage.py create_hotline_script
+    python manage.py create_script
 
 You should now be able to verify that the app is ready to go by running `python manage.py runserver` and browsing to http://your.server.ip:8000/
 
