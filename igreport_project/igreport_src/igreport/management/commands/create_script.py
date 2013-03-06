@@ -25,13 +25,12 @@ class Command(BaseCommand):
                     not params.has_key('ACCUSED_QUESTION') or \
                     not params.has_key('AMOUNT_QUESTION') or \
                     not params.has_key('DISTRICT_QUESTION') or \
-                    not params.has_key('NAME_QUESTION') or \
-                    not params.has_key('CONFIRMATION_MESSAGE'):
+                    not params.has_key('NAME_QUESTION'):
                         raise Exception('Configuration for language "%s" is incomplete' % language)
                     
                     print '************ [%s] Language configuration ************' % language
-                    t = (params['COMPLAINT_QUESTION'], params['ACCUSED_QUESTION'], params['DISTRICT_QUESTION'], params['AMOUNT_QUESTION'], params['NAME_QUESTION'], params['CONFIRMATION_MESSAGE'])
-                    print 'COMPLAINT_QUESTION: %s\nACCUSED_QUESTION: %s\nDISTRICT_QUESTION: %s\nAMOUNT_QUESTION: %s\nNAME_QUESTION: %s\nCONFIRMATION_MESSAGE: %s\n' % t
+                    t = (params['COMPLAINT_QUESTION'], params['ACCUSED_QUESTION'], params['DISTRICT_QUESTION'], params['AMOUNT_QUESTION'], params['NAME_QUESTION'],)
+                    print 'COMPLAINT_QUESTION: %s\nACCUSED_QUESTION: %s\nDISTRICT_QUESTION: %s\nAMOUNT_QUESTION: %s\nNAME_QUESTION: %s\n' % t
                     
                     slug_name = 'hotline_script_%s' % language
                     description = 'IGReport Hotline Script (%s)' % language
@@ -72,15 +71,17 @@ class Command(BaseCommand):
                     # What is your name
                     name_poll = Poll.objects.create(name='hotline_name', user=user, question=params['NAME_QUESTION'], type=Poll.TYPE_TEXT)
                     name_poll.sites.add(Site.objects.get_current())
-                    name_step = ScriptStep.objects.create(script=script, order=4, poll=name_poll, message='', rule=ScriptStep.RESEND_MOVEON, \
+                    name_step = ScriptStep.objects.create(script=script, order=4, poll=name_poll, message='', rule=ScriptStep.WAIT_MOVEON, \
                                     start_offset=0, retry_offset=3600, num_tries=1, giveup_offset=3600)
                     script.steps.add(name_step)
             
                     # Thank the reporter, confirm receipt
-                    confirm_step = ScriptStep.objects.create(script=script, order=5, message=params['CONFIRMATION_MESSAGE'], rule=ScriptStep.WAIT_MOVEON, \
+                    # XXX: Last step above has been changed from "RESEND_MOVEON" to "WAIT_MOVEON"
+                    # This should be sent after the script has completed. 
+                    """ confirm_step = ScriptStep.objects.create(script=script, order=5, message=params['CONFIRMATION_MESSAGE'], rule=ScriptStep.WAIT_MOVEON, \
                                        start_offset=0, giveup_offset=0)
                     script.steps.add(confirm_step)                    
-                    #
+                    """
             except Exception as err:
                 transaction.rollback()
                 print 'ERROR: %s\n****No changes made to database' % err.__str__()
