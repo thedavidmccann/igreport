@@ -10,6 +10,7 @@ from script.signals import script_progress_was_completed
 from .signal_handlers import handle_report, igreport_pre_save
 from django.db.models.signals import pre_save
 from rapidsms_httprouter.models import Message
+from rapidsms_httprouter.models import mass_text_sent
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
@@ -61,5 +62,13 @@ class Unprocessed(Message):
         verbose_name = 'Unprocessed Message'
         verbose_name_plural = 'Unprocessed Messages'
 
+def bulk_process(sender, **kwargs):
+    messages = kwargs['messages']
+    status = kwargs['status']
+    if status == 'P':
+        messages.filter(status='P').update(status='Q')
+
+mass_text_sent.connect(bulk_process, weak=False)
+        
 script_progress_was_completed.connect(handle_report, weak=False)
 pre_save.connect(igreport_pre_save, sender=IGReport, weak=False)

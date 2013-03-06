@@ -31,7 +31,7 @@ def handle_report(**kwargs):
     report.district = find_best_response(session, district_poll)
     report.amount_freeform = find_best_response(session, amount_poll)
     report.names = find_best_response(session, names_poll)
-    connection.contact.name = report.names
+    connection.contact.name = report.names if report.names else connection.identity
     connection.contact.save()
     report.save()
     Message.objects.create(\

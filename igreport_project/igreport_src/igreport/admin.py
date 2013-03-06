@@ -12,7 +12,7 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
 
     list_display = ['sender', 'message', 'accused', 'amount_formatted', 'report_time', 'options']
     list_filter = ['datetime']
-    ordering = ['synced', '-datetime']
+    ordering = ['-datetime']
     #date_hierarchy = ['datetime'] # causes strange "ImproperlyConfigured" exception
     search_fields = ['reference_number', 'connection__identity']
     actions = None
