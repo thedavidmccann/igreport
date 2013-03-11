@@ -38,7 +38,10 @@ def sync_report(request, report_id):
     #  "offences":"test",
     #  "username":"admin",
     #  "password":"admin"}
-    if report.completed:
+    if not report.completed:
+        return HttpResponse('Report incomplete', status=400)
+    
+    try:
         report_data = { \
             'accused': report.subject,
             'accused_gender': 'N',  # don't collect gender
@@ -67,7 +70,6 @@ def sync_report(request, report_id):
 
         report.synced = True
         report.save()
-        return HttpResponse('OK',
-            status=200)
-    else:
-        return HttpResponse('', status=400)
+        return HttpResponse('OK', status=200)
+    except Exception as err:
+        return HttpResponse(err.__str__(), status=500)

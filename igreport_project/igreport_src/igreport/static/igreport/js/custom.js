@@ -130,7 +130,7 @@ function syncit(rid) {
 		if(r.readyState == 4) {
 			ajax_done();
 			if(r.status != 200) {
-				alert(r.statusText);
+				alert(r.responseText);
 				return;
 			}
 			alert('Report Successfuly synced');
