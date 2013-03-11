@@ -11,6 +11,8 @@ CMS_USER = 'cmsuser'
 CMS_PASSWORD = 'cmspass'
 CMS_URL = 'localhost:8008/sync/'
 
+ADMINS = (('Johnson Mpeirwe', 'mpeirwe@gmail.com'), )
+
 # -------------------------------------------------------------------- #
 #                          PATH CONFIGURATION                          #
 # -------------------------------------------------------------------- #

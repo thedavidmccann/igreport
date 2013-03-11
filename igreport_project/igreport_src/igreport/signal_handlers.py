@@ -24,7 +24,7 @@ def handle_report(**kwargs):
     names_poll = Poll.objects.get(scriptstep__script__slug=slug, name='hotline_name')
 
     progress = kwargs['sender']
-    session = ScriptSession.objects.filter(script=progress.script, connection=connection).latest('end_time')
+    session = ScriptSession.objects.filter(script=progress.script, connection=connection, end_time__isnull=False).latest('end_time')
 
     report.report = find_best_response(session, report_poll)
     report.subject = find_best_response(session, accused_poll)
