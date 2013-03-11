@@ -7,7 +7,7 @@ from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST, require_GET
 from rapidsms.contrib.locations.models import Location, LocationType
-from rapidsms.router.api import send
+from rapidsms_httprouter.models import Message
 from igreport.models import IGReport, Category, Comment
 
 def ajax_success(msg=None, js_=None):
@@ -81,7 +81,7 @@ def send_sms(request, report_id):
         return HttpResponse('Message too short/not valid', status=400)
 
     try:
-        send(text, backend_name=None, identity=None, connection=report.connection)
+        Message.objects.create(direction='O', status='Q', connection=report.connection, text=text)
     except Exception as err:
         return HttpResponse(err.__str__(), status=500)
 

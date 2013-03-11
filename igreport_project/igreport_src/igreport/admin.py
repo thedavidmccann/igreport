@@ -14,7 +14,7 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
     list_filter = ['datetime']
     ordering = ['-datetime']
     #date_hierarchy = ['datetime'] # causes strange "ImproperlyConfigured" exception
-    search_fields = ['reference_number', 'connection__identity']
+    search_fields = ['connection__identity']
     actions = None
     Media = media.JQueryUIMedia
     change_list_template = 'igreport/change_list.html'
