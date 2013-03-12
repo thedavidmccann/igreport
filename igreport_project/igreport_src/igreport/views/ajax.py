@@ -25,46 +25,42 @@ def ajax_success(msg=None, js_=None):
 @never_cache
 def get_report(request, report_id):
 
-    r = get_object_or_404(IGReport, pk=report_id)
+    try:
+        r = get_object_or_404(IGReport, pk=report_id)
 
-    js = dict(accused = r.subject or '', report = r.report or '', amount_ff = r.amount_freeform or '', amount = str(int(r.amount)) if r.amount>=0 else '', district_id = r.district_id or  '', date = r.datetime.strftime('%d/%m/%Y %H:%M'), sender= r.connection.identity, names = r.names or '')
-    js_rpt = simplejson.dumps(js)
+        js = dict(accused = r.subject or '', report = r.report or '', amount_ff = r.amount_freeform or '', amount = str(int(r.amount)) if r.amount>=0 else '', district_id = r.district_id or  '', date = r.datetime.strftime('%d/%m/%Y %H:%M'), sender= r.connection.identity, names = r.names or '')
+        js_rpt = simplejson.dumps(js)
 
-    ''' get districts '''
-    objs = Location.objects.filter(type='district').order_by('name')
-    l = [ '{id:%s,name:%s}' % (d.id, json.dumps(d.name)) for d in objs ]
-    js_districts = '[%s]' % ','.join(l)
+        ''' get districts '''
+        objs = Location.objects.filter(type='district').order_by('name')
+        l = [ '{id:%s,name:%s}' % (d.id, json.dumps(d.name)) for d in objs ]
+        js_districts = '[%s]' % ','.join(l)
+    
+        ''' the selected categories '''
+        curr_categories = [c.id for c in r.categories.all()]
 
-    """
-    ''' get sub-counties '''
-    objs = Location.objects.filter(type='sub_county').order_by('name')
-    l = [ '{id:%s,name:%s}' % (d.id, json.dumps(d.name)) for d in objs ]
-    js_subcty = '[%s]' % ','.join(l)
-    """
+        ''' all categories '''
+        objs = Category.objects.all()
+        l = list()
     
-    ''' the selected categories '''
-    curr_categories = [c.id for c in r.categories.all()]
+        for c in objs:
+            checked='false'
+            if curr_categories.__contains__(c.id):
+                checked = 'true'
+            l.append( '{id:%s,name:%s,checked:%s}' % (c.id, json.dumps(c.name), checked) )
 
-    ''' all categories '''
-    objs = Category.objects.all()
-    l = list()
+        js_cat = '[%s]' % ','.join(l)
     
-    for c in objs:
-        checked='false'
-        if curr_categories.__contains__(c.id):
-            checked = 'true'
-        l.append( '{id:%s,name:%s,checked:%s}' % (c.id, json.dumps(c.name), checked) )
-
-    js_cat = '[%s]' % ','.join(l)
+        ''' comments '''
+        objs = Comment.objects.filter(report=r)
+        l = [ '{user:%s,date:%s,comment:%s}' % (json.dumps(c.user.username), json.dumps(c.datetime.strftime('%d/%m/%Y')), json.dumps(c.comment)) for c in objs ]
+        js_comments = '[%s]' % ','.join(l)
     
-    ''' comments '''
-    objs = Comment.objects.filter(report=r)
-    l = [ '{user:%s,date:%s,comment:%s}' % (json.dumps(c.user.username), json.dumps(c.datetime.strftime('%d/%m/%Y')), json.dumps(c.comment)) for c in objs ]
-    js_comments = '[%s]' % ','.join(l)
+        js_text = 'res:{ rpt:%s,dist:%s,cat:%s,comm:%s }' % ( js_rpt, js_districts, js_cat, js_comments )
     
-    js_text = 'res:{ rpt:%s,dist:%s,cat:%s,comm:%s }' % ( js_rpt, js_districts, js_cat, js_comments )
-    
-    return ajax_success('OK', js_text)
+        return ajax_success('OK', js_text)
+    except Exception as err:
+        return HttpResponse(err.__str__(), status=500)
 
 @login_required
 @require_POST

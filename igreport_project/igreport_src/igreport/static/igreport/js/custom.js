@@ -40,7 +40,7 @@ function editrpt(rid) {
 		if(r.readyState == 4) {
 			ajax_done();
 			if(r.status != 200) {
-				alert(r.statusText);
+				alert(r.responseText);
 				return;
 			}
 			if(/{error:false/.test(r.responseText)) {
@@ -63,6 +63,8 @@ function editrpt(rid) {
 				}
 				if(!cathtml) {
 					cathtml = '<h3>[No Report Categories Configured]</h3>';
+				} else {
+					cathtml = '<div style="border:solid #ccc 1px;height:70px;overflow:auto;padding:10px">'+cathtml+'</div>';
 				}
 				var comments = '';
 				if(comm.length>0) {
