@@ -26,7 +26,8 @@ def handle_report(**kwargs):
     progress = kwargs['sender']
     session = ScriptSession.objects.filter(script=progress.script, connection=connection, end_time__isnull=False).latest('end_time')
 
-    report.report = find_best_response(session, report_poll)
+    response = find_best_response(session, report_poll)
+    report.report = response if response else ''
     report.subject = find_best_response(session, accused_poll)
     report.district = find_best_response(session, district_poll)
     report.amount_freeform = find_best_response(session, amount_poll)
