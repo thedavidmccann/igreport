@@ -55,8 +55,8 @@ def sync_report(request, report_id):
             'reference_number': report.reference_number,
             'complaint_date': datetime.strftime(report.datetime, '%Y/%m/%d'),
         }
-	if report.amount > 0:
-		report_data['amount'] = report.amount
+        if report.amount > 0:
+            report_data['amount'] = report.amount
 
         report_data = simplejson.dumps(report_data)
 
