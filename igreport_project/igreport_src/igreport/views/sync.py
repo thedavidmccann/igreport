@@ -65,11 +65,9 @@ def sync_report(request, report_id):
         response = urllib2.urlopen(req)
         json_response = response.read()
         json_object = simplejson.loads(json_response)
-
-        print "WOOHOO %s" % json_response
-
+        
         if (json_object['result'] != 'OK'):
-            return HttpResponse('', status={'PD':403, 'RC':404, 'IE':500}[json_object['result']])
+            return HttpResponse(json_object['message'], status={'PD':403, 'RC':404, 'IE':500}[json_object['result']])
 
         report.synced = True
         report.save()
