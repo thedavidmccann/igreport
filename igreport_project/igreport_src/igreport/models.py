@@ -42,6 +42,7 @@ class IGReport(models.Model):
     keyword = models.TextField(blank=True, null=True, default=None)
     report = models.TextField()
     subject = models.TextField(blank=True, null=True, default=None)
+    district_freeform = models.CharField(max_length=255, null=True, blank=True)
     district = models.ForeignKey(Location, null=True, default=None, related_name='district_reports')
     categories = models.ManyToManyField(Category, related_name='reports')
     amount_freeform = models.TextField(null=True, blank=True)
@@ -61,6 +62,12 @@ class Unprocessed(Message):
         proxy = True
         verbose_name = 'Unprocessed Message'
         verbose_name_plural = 'Unprocessed Messages'
+
+class MessageLog(Message):
+    class Meta:
+        proxy = True
+        verbose_name = 'Message'
+        verbose_name_plural = 'Messages'
 
 def bulk_process(sender, **kwargs):
     messages = kwargs['messages']

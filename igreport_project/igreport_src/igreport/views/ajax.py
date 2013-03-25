@@ -28,21 +28,22 @@ def get_report(request, report_id):
     try:
         r = get_object_or_404(IGReport, pk=report_id)
 
-        js = dict(accused = r.subject or '', report = r.report or '', amount_ff = r.amount_freeform or '', amount = str(int(r.amount)) if r.amount>=0 else '', district_id = r.district_id or  '', date = r.datetime.strftime('%d/%m/%Y %H:%M'), sender= r.connection.identity, names = r.names or '')
+        js = dict(accused = r.subject or '', report = r.report or '', amount_ff = r.amount_freeform or '', amount = str(int(r.amount)) if r.amount>=0 else '', district_ff=r.district_freeform or '', district_id = r.district_id or  '', date = r.datetime.strftime('%d/%m/%Y %H:%M'), sender= r.connection.identity, names = r.names or '')
         js_rpt = simplejson.dumps(js)
 
         ''' get districts '''
         objs = Location.objects.filter(type='district').order_by('name')
         l = [ '{id:%s,name:%s}' % (d.id, json.dumps(d.name)) for d in objs ]
+        l.insert(0, '{id:0,name:""}')
         js_districts = '[%s]' % ','.join(l)
-    
+
         ''' the selected categories '''
         curr_categories = [c.id for c in r.categories.all()]
 
         ''' all categories '''
         objs = Category.objects.all()
         l = list()
-    
+
         for c in objs:
             checked='false'
             if curr_categories.__contains__(c.id):
@@ -50,14 +51,14 @@ def get_report(request, report_id):
             l.append( '{id:%s,name:%s,checked:%s}' % (c.id, json.dumps(c.name), checked) )
 
         js_cat = '[%s]' % ','.join(l)
-    
+
         ''' comments '''
         objs = Comment.objects.filter(report=r)
         l = [ '{user:%s,date:%s,comment:%s}' % (json.dumps(c.user.username), json.dumps(c.datetime.strftime('%d/%m/%Y')), json.dumps(c.comment)) for c in objs ]
         js_comments = '[%s]' % ','.join(l)
-    
+
         js_text = 'res:{ rpt:%s,dist:%s,cat:%s,comm:%s }' % ( js_rpt, js_districts, js_cat, js_comments )
-    
+
         return ajax_success('OK', js_text)
     except Exception as err:
         return HttpResponse(err.__str__(), status=500)
@@ -68,7 +69,7 @@ def get_report(request, report_id):
 def send_sms(request, report_id):
 
     report = get_object_or_404(IGReport, pk=report_id)
-    
+
     if not request.POST.has_key('text'):
         return HttpResponse('Message not specified', status=400)
 

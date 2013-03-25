@@ -4,7 +4,7 @@ from django.core.exceptions import PermissionDenied
 from django.forms import ModelForm, ModelChoiceField
 from rapidsms_httprouter.models import Message
 from rapidsms.contrib.locations.models import Location
-from igreport.models import IGReport, UserProfile, Category, Unprocessed
+from igreport.models import IGReport, UserProfile, Category, MessageLog, Unprocessed
 from igreport import media
 from igreport.html.admin import ListStyleAdmin
 
@@ -40,9 +40,8 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
         width = ''
         if len(text) > 50:
             width = '300px'
-        else:
-            html = text
-        style = ''
+
+        style = 'font-size:13px;'
         if width:
             style += 'width:%s;' % width
         if style:
@@ -114,6 +113,64 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
         context = {'title': title, 'include_file':'igreport/report.html', 'bottom_js':'rptsetc()', 'buttons': buttons}
         return super(IGReportAdmin, self).changelist_view(request, extra_context=context)
 
+class MessageLogAdmin(admin.ModelAdmin):
+    list_display = ['sender', 'message', 'send_date', 'direction', 'status']
+    #date_hierarchy = ['date']
+    search_fields = ('connection__identity', 'text')
+    list_filter = ['date', 'direction', 'status']
+    actions = None
+    change_list_template = 'igreport/change_list.html'
+
+    def __init__(self, *args, **kwargs):
+        super(MessageLogAdmin, self).__init__(*args, **kwargs)
+        self.list_display_links = (None,)
+        
+    def sender(self, obj):
+        return obj.connection.identity
+    
+    sender.admin_order_field = 'connection'
+
+    def message(self, obj):
+        text = obj.text
+        if obj.direction == 'I':
+            color='#336699'
+        else:
+            color = '#000'
+        width = ''
+        if len(text) > 50:
+            width = '300px'
+
+        style = 'color:%s;font-size:13px;' % color
+        if width:
+            style += 'width:%s;' % width
+        if style:
+            style = ' style="%s"' % style
+        html = '<div id="rpt_%s"%s>%s</div>' % (obj.id, style, text)
+        return html
+    
+    message.allow_tags='True'
+
+    def send_date(self, obj):
+        return obj.date.strftime('%d/%m/%Y %H:%M')
+
+    send_date.short_description = 'Send Date'
+    send_date.admin_order_field = 'date'
+    
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def changelist_view(self, request, extra_context=None):
+
+        buttons = [ {'label': 'Go To Reports', 'link': '../igreport/'}, {'label': 'Refresh', 'link': '?'} ]
+        context = {'title': 'All Messages', 'buttons': buttons}
+        return super(MessageLogAdmin, self).changelist_view(request, extra_context=context)
+    
+    def change_view(self, request, object_id, extra_context=None):
+        raise PermissionDenied
+
 class UnprocessedAdmin(admin.ModelAdmin):
     list_display = ['sender', 'message', 'send_date']
     #date_hierarchy = ['date']
@@ -133,12 +190,12 @@ class UnprocessedAdmin(admin.ModelAdmin):
 
     def message(self, obj):
         text = obj.text
+        
         width = ''
         if len(text) > 50:
             width = '300px'
-        else:
-            html = text
-        style = ''
+            
+        style = 'font-size:13px;'
         if width:
             style += 'width:%s;' % width
         if style:
@@ -187,4 +244,6 @@ class CategoryAdmin(admin.ModelAdmin):
 admin.site.register(IGReport, IGReportAdmin)
 admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(Category, CategoryAdmin)
+admin.site.register(MessageLog, MessageLogAdmin)
 admin.site.register(Unprocessed, UnprocessedAdmin)
+admin.site.unregister(Message);

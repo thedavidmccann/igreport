@@ -56,9 +56,9 @@ class Command(BaseCommand):
                     script.steps.add(accused_step)
 
                     # District question
-                    district_poll = Poll.objects.create(name='hotline_district', user=user, question=params['DISTRICT_QUESTION'], type=Poll.TYPE_LOCATION, default_response='')
+                    district_poll = Poll.objects.create(name='hotline_district', user=user, question=params['DISTRICT_QUESTION'], type=Poll.TYPE_TEXT, default_response='')
                     district_poll.sites.add(Site.objects.get_current())
-                    district_step = ScriptStep.objects.create(script=script, order=2, poll=district_poll, message='', rule=ScriptStep.STRICT_MOVEON, \
+                    district_step = ScriptStep.objects.create(script=script, order=2, poll=district_poll, message='', rule=ScriptStep.RESEND_MOVEON, \
                                          start_offset=0, retry_offset=3600, num_tries=1, giveup_offset=3600)
                     script.steps.add(district_step)
 

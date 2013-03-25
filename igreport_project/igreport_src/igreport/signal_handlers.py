@@ -2,6 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 # encoding=utf-8
 
+import difflib
 from script.utils.handling import find_closest_match, find_best_response
 from script.models import ScriptSession
 from rapidsms.contrib.locations.models import Location
@@ -29,10 +30,27 @@ def handle_report(**kwargs):
     response = find_best_response(session, report_poll)
     report.report = response if response else ''
     report.subject = find_best_response(session, accused_poll)
-    report.district = find_best_response(session, district_poll)
     report.amount_freeform = find_best_response(session, amount_poll)
     report.names = find_best_response(session, names_poll)
     connection.contact.name = report.names if report.names else connection.identity
+    
+    district = find_best_response(session, district_poll)
+    
+    if district_poll.type == Poll.TYPE_LOCATION:
+        report.district = district
+    else:
+        report.district_freeform = district
+        locations = Location.objects.filter(type='district')
+        district_names = locations.values_list('name', flat=True)
+        district_names_lower = [d.lower() for d in district_names]
+        
+        matches = difflib.get_close_matches(district.lower(), district_names_lower, 1)
+        if not matches:
+            report.district = None
+        else:
+            district_obj = Location.objects.get(type__slug='district', name__iexact=matches[0].lower())
+            report.district = district_obj
+    
     connection.contact.save()
     report.save()
     Message.objects.create(\
