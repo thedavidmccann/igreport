@@ -246,4 +246,3 @@ admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(MessageLog, MessageLogAdmin)
 admin.site.register(Unprocessed, UnprocessedAdmin)
-admin.site.unregister(Message);

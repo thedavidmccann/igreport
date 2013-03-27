@@ -8,6 +8,7 @@ from script.models import ScriptSession
 from rapidsms.contrib.locations.models import Location
 from rapidsms_httprouter.models import Message
 from igreport.questions import translations
+from igreport import util
 from poll.models import Poll
 
 def handle_report(**kwargs):
@@ -26,7 +27,8 @@ def handle_report(**kwargs):
 
     progress = kwargs['sender']
     session = ScriptSession.objects.filter(script=progress.script, connection=connection, end_time__isnull=False).latest('end_time')
-
+    
+    report.reference_number = util.get_reference_number(report.id)
     response = find_best_response(session, report_poll)
     report.report = response if response else ''
     report.subject = find_best_response(session, accused_poll)
