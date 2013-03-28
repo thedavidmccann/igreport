@@ -12,17 +12,18 @@ number should start in the primary key value.
 """
 def get_reference_number(pk):
     
+    sep = '0'
     maxval = 2147483647
     
     if pk >= maxval:
-        return '%s' % pk
+        return '%s%s' % (pk, sep)
     
     maxlen = len('%s' % maxval)
     pklen = len( '%s' % pk ) 
     digits = maxlen - pklen
-    # generate a random number of width digits and pad pk
+    
     rand = generate_random_str(digits, string.digits)
-    reference_number = '%s%s' % (pk, rand)
+    reference_number = '%s%s%s' % (pk, sep, rand)
     
     return reference_number
     

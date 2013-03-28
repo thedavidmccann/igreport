@@ -38,20 +38,19 @@ def handle_report(**kwargs):
     
     district = find_best_response(session, district_poll)
     
-    if district_poll.type == Poll.TYPE_LOCATION:
-        report.district = district
-    else:
-        report.district_freeform = district
-        locations = Location.objects.filter(type='district')
-        district_names = locations.values_list('name', flat=True)
-        district_names_lower = [d.lower() for d in district_names]
-        
-        matches = difflib.get_close_matches(district.lower(), district_names_lower, 1)
-        if not matches:
-            report.district = None
+    if district:
+        if district_poll.type == Poll.TYPE_LOCATION:
+            report.district = district
         else:
-            district_obj = Location.objects.get(type__slug='district', name__iexact=matches[0].lower())
-            report.district = district_obj
+            report.district_freeform = district
+            locations = Location.objects.filter(type='district')
+            district_names = locations.values_list('name', flat=True)
+            district_names_lower = [d.lower() for d in district_names]
+            
+            matches = difflib.get_close_matches(district.lower(), district_names_lower, 1)
+            if matches:
+                district_obj = Location.objects.get(type__slug='district', name__iexact=matches[0].lower())
+                report.district = district_obj
     
     connection.contact.save()
     report.save()
