@@ -47,7 +47,7 @@ def handle_report(**kwargs):
             district_names = locations.values_list('name', flat=True)
             district_names_lower = [d.lower() for d in district_names]
             
-            matches = difflib.get_close_matches(district.lower(), district_names_lower, 1)
+            matches = difflib.get_close_matches(district.lower(), district_names_lower)
             if matches:
                 district_obj = Location.objects.get(type__slug='district', name__iexact=matches[0].lower())
                 report.district = district_obj

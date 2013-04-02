@@ -43,7 +43,7 @@ class IGReport(models.Model):
     keyword = models.TextField(blank=True, null=True, default=None)
     report = models.TextField()
     subject = models.TextField(blank=True, null=True, default=None)
-    district_freeform = models.CharField(max_length=255, null=True, blank=True)
+    district_freeform = models.TextField(null=True, blank=True)
     district = models.ForeignKey(Location, null=True, default=None, related_name='district_reports')
     categories = models.ManyToManyField(Category, related_name='reports')
     amount_freeform = models.TextField(null=True, blank=True)
