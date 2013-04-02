@@ -34,7 +34,7 @@ def handle_report(**kwargs):
     report.subject = find_best_response(session, accused_poll)
     report.amount_freeform = find_best_response(session, amount_poll)
     report.names = find_best_response(session, names_poll)
-    connection.contact.name = report.names if report.names else connection.identity
+    connection.contact.name = report.names if (report.names and len(report.names)<=100) else connection.identity
     
     district = find_best_response(session, district_poll)
     

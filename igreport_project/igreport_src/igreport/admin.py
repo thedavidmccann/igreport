@@ -25,9 +25,21 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
         self.list_display_links = (None,)
 
     def accused(self, obj):
-        return obj.subject
+        text = obj.subject
+        width = ''
+        if len(text) > 50:
+            width = '300px'
+
+        style = 'font-size:13px;'
+        if width:
+            style += 'width:%s;' % width
+        if style:
+            style = ' style="%s"' % style
+        html = '<div%s>%s</div>' % (style, text)
+        return html
 
     accused.short_description = 'Accused'
+    accused.allow_tags=True
 
     def report_time(self, obj):
         return obj.datetime.strftime('%d/%m/%Y %H:%M')

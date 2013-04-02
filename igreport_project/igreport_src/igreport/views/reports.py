@@ -74,7 +74,7 @@ def submit_report(request, report_id):
         report.report = request.POST['report'] if 'report' in request.POST else ''
         report.names = request.POST['names'] if 'names' in request.POST else ''
         
-        if 'amount' in request.POST:
+        if 'amount' in request.POST and request.POST['amount']:
             try:
                 report.amount = float(request.POST['amount'])
             except ValueError:

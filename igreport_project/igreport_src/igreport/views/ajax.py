@@ -34,7 +34,7 @@ def get_report(request, report_id):
         ''' get districts '''
         objs = Location.objects.filter(type='district').order_by('name')
         l = [ '{id:%s,name:%s}' % (d.id, json.dumps(d.name)) for d in objs ]
-        l.insert(0, '{id:0,name:""}')
+        l.insert(0, '{id:"",name:""}')
         js_districts = '[%s]' % ','.join(l)
 
         ''' the selected categories '''
