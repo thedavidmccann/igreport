@@ -27,7 +27,7 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
     def accused(self, obj):
         text = obj.subject
         width = ''
-        if len(text) > 50:
+        if text and len(text) > 50:
             width = '300px'
 
         style = 'font-size:13px;'
@@ -50,7 +50,7 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
     def message(self, obj):
         text = obj.report
         width = ''
-        if len(text) > 50:
+        if text and len(text) > 50:
             width = '300px'
 
         style = 'font-size:13px;'
