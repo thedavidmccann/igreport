@@ -35,8 +35,8 @@ class Comment(models.Model):
     comment = models.TextField()
 
 class Currency(models.Model):
-    code = models.TextField('Code', max_length=3, unique=True, help_text='The currency code, E.g UGX')
-    name = models.TextField('Name', max_length=100, help_text='The currency name, E.g Uganda Shillings')
+    code = models.CharField('Code', max_length=3, unique=True, help_text='The currency code, E.g UGX')
+    name = models.CharField('Name', max_length=100, help_text='The currency name, E.g Uganda Shillings')
     
     class Meta:
         verbose_name = 'Currency'

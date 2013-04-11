@@ -1,11 +1,12 @@
 import json
+import locale
 from django.conf import settings
 from django.contrib import admin
 from django.core.exceptions import PermissionDenied
 from django.forms import ModelForm, ModelChoiceField
 from rapidsms_httprouter.models import Message
 from rapidsms.contrib.locations.models import Location
-from igreport.models import IGReport, UserProfile, Category, MessageLog, Unprocessed
+from igreport.models import IGReport, Currency, UserProfile, Category, MessageLog, Unprocessed
 from igreport import media
 from igreport.html.admin import ListStyleAdmin
 
@@ -78,11 +79,20 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
 
     def amount_formatted(self, obj):
         if obj.amount:
-            return int(obj.amount)
+            amount = int(obj.amount)
+            locale.setlocale(locale.LC_ALL, '')
+            amount = locale.format("%d", amount, grouping=True)
+            currency = ''
+            if obj.currency:
+                currency = obj.currency.code
+            if currency:
+                amount = '%s<span style="color:#cc0000;font-weight:bold">%s</span>' % (currency, amount)
+            return amount
         return 'NA'
     
     amount_formatted.short_description = 'Amount'
     amount_formatted.admin_order_field = 'amount'
+    amount_formatted.allow_tags=True
 
     def options(self, obj):
         html = ''
@@ -255,8 +265,12 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'description']
+
+class CurrencyAdmin(admin.ModelAdmin):
+    list_display = ['code', 'name']
     
 admin.site.register(IGReport, IGReportAdmin)
+admin.site.register(Currency, CurrencyAdmin)
 admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(MessageLog, MessageLogAdmin)
