@@ -34,6 +34,14 @@ class Comment(models.Model):
     datetime = models.DateTimeField(auto_now_add=True)
     comment = models.TextField()
 
+class Currency(models.Model):
+    code = models.TextField('Code', max_length=3, unique=True, help_text='The currency code, E.g UGX')
+    name = models.TextField('Name', max_length=100, help_text='The currency name, E.g Uganda Shillings')
+    
+    class Meta:
+        verbose_name = 'Currency'
+        verbose_name_plural = 'Currencies'
+
 class IGReport(models.Model):
     connection = models.ForeignKey(Connection)
     completed = models.BooleanField(default=False)
@@ -48,6 +56,7 @@ class IGReport(models.Model):
     categories = models.ManyToManyField(Category, related_name='reports')
     amount_freeform = models.TextField(null=True, blank=True)
     amount = models.DecimalField(decimal_places=2, max_digits=26, null=True)
+    currency = models.ForeignKey(Currency, null=True, blank=True)
     names = models.TextField(null=True, blank=True)
 
     class Meta:

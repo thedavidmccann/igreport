@@ -2,6 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 # encoding=utf-8
 
+import re
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.http import require_POST, require_GET
@@ -9,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 
 from django.template import RequestContext
-from igreport.models import IGReport, Category
+from igreport.models import IGReport, Category, Currency
 from igreport.models import UserProfile
 
 from rapidsms.contrib.locations.models import Location
@@ -65,6 +66,12 @@ def submit_report(request, report_id):
             except Location.DoesNotExist:
                 return HttpResponse('Invalid District ID', status=400)
             
+        if 'currency' in request.POST and request.POST['currency']:
+            try:
+                report.currency = Currency.objects.get(id=request.POST['currency'])
+            except Location.DoesNotExist:
+                return HttpResponse('Invalid Currency ID', status=400)            
+            
         if 'comments' in request.POST:
             for comment in request.POST.getlist('comments'):
                 if comment:
@@ -76,7 +83,8 @@ def submit_report(request, report_id):
         
         if 'amount' in request.POST and request.POST['amount']:
             try:
-                report.amount = float(request.POST['amount'])
+                amount = re.sub(',', '', request.POST['amount'])
+                report.amount = float(amount)
             except ValueError:
                 return HttpResponse('Invalid Amount', status=400)
             

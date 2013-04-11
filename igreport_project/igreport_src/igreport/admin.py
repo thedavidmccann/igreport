@@ -1,3 +1,4 @@
+import json
 from django.conf import settings
 from django.contrib import admin
 from django.core.exceptions import PermissionDenied
@@ -90,7 +91,9 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
             html += link
 
         if obj.completed and not obj.synced:
-            link = '<a href="" onclick="syncit(%s);return false;" title="Sync Report"><img src="%s/igreport/img/sync.png"></a>&nbsp;&nbsp;' % (obj.id, settings.STATIC_URL)
+            d = dict(id=str(obj.id), amount=str(obj.amount) if obj.amount else '', amountff=obj.amount_freeform or '')
+            a = json.dumps( d )
+            link = '<a href="" onclick=\'syncit(%s);return false;\' title="Sync Report"><img src="%s/igreport/img/sync.png"></a>&nbsp;&nbsp;' % (a, settings.STATIC_URL)
             html += link
         
         msisdn = obj.connection.identity

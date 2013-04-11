@@ -6,7 +6,7 @@ PROJECT_NAME = 'igreport'
 # message to send to user to help us determine in what language we should engage them
 DEFAULT_RESPONSE = 'To report in English, SMS the word "corrupt" to 6009. To report in Luganda, SMS the word "loopa"'
 REPORT_KEYWORDS = dict(corrupt='eng', corupt='eng', loopa='lug', lopa='lug')
-
+DEFAULT_CURRENCY='UGX'
 CMS_USER = 'cmsuser'
 CMS_PASSWORD = 'cmspass'
 CMS_URL = 'localhost:8000/sync/'

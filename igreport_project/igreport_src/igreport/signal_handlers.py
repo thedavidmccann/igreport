@@ -63,7 +63,7 @@ def handle_report(**kwargs):
 
 def igreport_pre_save(sender, **kwargs):
     instance = kwargs['instance']
-    if instance.pk and len(instance.categories.all()) and instance.subject and instance.report and instance.district and instance.names and (instance.amount >= 0):
+    if instance.pk and len(instance.categories.all()) and instance.subject and instance.report and instance.district and instance.names:
         instance.completed = True
     else:
         instance.completed = False

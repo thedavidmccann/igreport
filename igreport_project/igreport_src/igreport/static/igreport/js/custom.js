@@ -50,11 +50,16 @@ function editrpt(rid) {
 				//var scty = o.res.scty;
 				var cat = o.res.cat;
 				var comm = o.res.comm;
+				var curr = o.res.curr;
 				
 				var doptions = '';
 				for(var i=0; i<dist.length; i++) {
 					doptions += '<option value="'+dist[i].id+'"'+(dist[i].id==rpt.district_id?' selected="selected"':'')+'>'+dist[i].name+'</option>';
 				}
+				var coptions = '';
+				for(var i=0; i<curr.length; i++) {
+					coptions += '<option value="'+curr[i].id+'"'+(curr[i].id==rpt.currency_id?' selected="selected"':'')+'>'+curr[i].code+'</option>';
+				}				
 				var cathtml = '';
 				if(cat.length) {
 					for(var i=0; i<cat.length; i++) {
@@ -74,7 +79,7 @@ function editrpt(rid) {
 					}
 					comments = '<div style="padding-top:5px"><strong>Current Comments</strong>:<br/>'+comments+'</div>';
 				}
-				var html = '<div class="report"><form id="rptform"><table border="0" cellpadding="0" cellspacing="0"><tr><td colspan="2"><div class="rpt-title">Submitted by <span style="color:#ff6600;font-weight:bold">'+rpt.sender+'</span> on <span style="color:#ff6600;font-weight:bold">'+rpt.date+'</span></div></td></tr><tr><td><div class="rpt-label">Report</div><div><textarea id="report" name="report" class="rpt-ta">'+rpt.report+'</textarea></div></td><td><div class="rpt-label">Accused</div><div><textarea id="subject" name="subject" class="rpt-ta">'+rpt.accused+'</textarea></div></td></tr><tr><td><div class="rpt-label">District</div><div><select id="dist" name="district" class="rpt-list">'+doptions+'</select><br/>(User reported: <span style="color:#CC0000">'+rpt.district_ff+'</span>)</div></td><td><div class="rpt-label">Amount</div><div><input type="text" id="amount" name="amount" value="'+rpt.amount+'" /><br/>(User reported: '+rpt.amount_ff+')</div></td></tr><tr><td><div class="rpt-label">Name of Reporter</div><div><textarea id="names" name="names" class="rpt-ta">'+rpt.names+'</textarea></div></td><td><div class="rpt-label">Case Category</div><div>'+cathtml+'</div></td></tr><tr><td><div class="rpt-label">Comments</div><div><textarea id="comments" name="comments" class="rpt-ta"></textarea><input type="hidden" name="id" value="'+rid+'" /><input type="hidden" name="csrfmiddlewaretoken" value="'+getCookie('csrftoken')+'" /></div></td><td>'+comments+'</td></tr></table></form></div>';
+				var html = '<div class="report"><form id="rptform"><table border="0" cellpadding="0" cellspacing="0"><tr><td colspan="2"><div class="rpt-title">Submitted by <span style="color:#ff6600;font-weight:bold">'+rpt.sender+'</span> on <span style="color:#ff6600;font-weight:bold">'+rpt.date+'</span></div></td></tr><tr><td><div class="rpt-label">Report</div><div><textarea id="report" name="report" class="rpt-ta">'+rpt.report+'</textarea></div></td><td><div class="rpt-label">Accused</div><div><textarea id="subject" name="subject" class="rpt-ta">'+rpt.accused+'</textarea></div></td></tr><tr><td><div class="rpt-label">District</div><div><select id="dist" name="district" class="rpt-list">'+doptions+'</select><br/>(User reported: <span style="color:#CC0000">'+rpt.district_ff+'</span>)</div></td><td><div class="rpt-label">Amount</div><div><select id="currency" name="currency" class="rpt-list">'+coptions+'</select>&nbsp;<input type="text" id="amount" name="amount" onkeydown="damt(this)" onkeyup="damt(this)" value="'+rpt.amount+'" /><br/>(User reported: <span style="color:#CC0000">'+rpt.amount_ff+'</span>)</div></td></tr><tr><td><div class="rpt-label">Name of Reporter</div><div><textarea id="names" name="names" class="rpt-ta">'+rpt.names+'</textarea></div></td><td><div class="rpt-label">Case Category</div><div>'+cathtml+'</div></td></tr><tr><td><div class="rpt-label">Comments</div><div><textarea id="comments" name="comments" class="rpt-ta"></textarea><input type="hidden" name="id" value="'+rid+'" /><input type="hidden" name="csrfmiddlewaretoken" value="'+getCookie('csrftoken')+'" /></div></td><td>'+comments+'</td></tr></table></form></div>';
 				
 				var title = 'User Report Details';
 				var btns = [{text:'Submit', click:function(){ update_rpt(rid); }}]
@@ -84,10 +89,24 @@ function editrpt(rid) {
 				
 				//$.datepicker.setDefaults({ dateFormat: 'mm/dd/yy' });
 				//$("#date").datepicker();
+				damt(document.getElementById('amount'));
 			}
 		}
 	}
 	r.send(null);	
+};
+
+function damt(input) {
+	var nStr = input.value + '';
+	nStr = nStr.replace( /\,/g, "");
+	var x = nStr.split( '.' );
+	var x1 = x[0];
+	var x2 = x.length > 1 ? '.' + x[1] : '';
+	var rgx = /(\d+)(\d{3})/;
+	while ( rgx.test(x1) ) {
+		x1 = x1.replace( rgx, '$1' + ',' + '$2' );
+	}
+	input.value = x1 + x2;
 };
 
 function update_rpt(rid) {
@@ -118,14 +137,22 @@ function update_rpt(rid) {
 	return true;	
 };
 
-function syncit(rid) {
+function syncit(rpt) {
 	//if(!confirm('Sync Report?')) {
 	//	return;
 	//}
+	if(rpt.amount.length == 0 && rpt.amountff.length>0) {
+		if(/^[0-9]+/i.test(rpt.amountff)) {
+			if(!confirm('Amount appears not to be set yet the user submitted "'+
+				rpt.amountff+'". Proceed?')) {
+				return false;
+			}
+		}
+	}
 	ajax_wait('Syncing Report. Please wait ..');
 	
 	var r = createHttpRequest();
-        r.open('POST', '/igreports/' + rid + '/sync/', true);
+        r.open('POST', '/igreports/' + rpt.id + '/sync/', true);
         r.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		
 	r.onreadystatechange = function() {
