@@ -85,8 +85,9 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
             currency = ''
             if obj.currency:
                 currency = obj.currency.code
+            amount = '<span style="color:#cc0000;font-weight:bold">%s</span>' % amount
             if currency:
-                amount = '%s<span style="color:#cc0000;font-weight:bold">%s</span>' % (currency, amount)
+                amount = '%s%s' % (currency, amount)
             return amount
         return 'NA'
     
