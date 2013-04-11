@@ -28,7 +28,8 @@ def get_report(request, report_id):
 
     try:
         r = get_object_or_404(IGReport, pk=report_id)
-	default_currency = get_object_or_404(Currency, code=settings.DEFAULT_CURRENCY)
+        
+        default_currency, created = Currency.objects.get_or_create(code=settings.DEFAULT_CURRENCY['code'], defaults=dict(name=settings.DEFAULT_CURRENCY['name']))
 
         js = dict(accused = r.subject or '', report = r.report or '', amount_ff = r.amount_freeform or '', amount = str(int(r.amount)) if r.amount>=0 else '', district_ff=r.district_freeform or '', district_id = r.district_id or  '', date = r.datetime.strftime('%d/%m/%Y %H:%M'), sender= r.connection.identity, names = r.names or '', currency_id=r.currency.id if r.currency else default_currency.id)
         js_rpt = simplejson.dumps(js)
