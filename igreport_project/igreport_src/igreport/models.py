@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from rapidsms.models import Connection
 from rapidsms.contrib.locations.models import Location
 from script.signals import script_progress_was_completed
-from .signal_handlers import handle_report, igreport_pre_save
+from .signal_handlers import handle_report, igreport_pre_save, igreport_msgq_pre_save
 from django.db.models.signals import pre_save
 from rapidsms_httprouter.models import Message
 from rapidsms_httprouter.models import mass_text_sent
@@ -85,3 +85,4 @@ mass_text_sent.connect(bulk_process, weak=False)
         
 script_progress_was_completed.connect(handle_report, weak=False)
 pre_save.connect(igreport_pre_save, sender=IGReport, weak=False)
+pre_save.connect(igreport_msgq_pre_save, sender=Message, weak=False)
