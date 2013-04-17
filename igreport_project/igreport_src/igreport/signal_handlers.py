@@ -4,7 +4,6 @@
 
 import re
 import difflib
-from django.conf import settings
 from script.utils.handling import find_closest_match, find_best_response
 from script.models import ScriptSession
 from rapidsms.contrib.locations.models import Location
@@ -69,13 +68,4 @@ def igreport_pre_save(sender, **kwargs):
         instance.completed = True
     else:
         instance.completed = False
-
-def igreport_msgq_pre_save(sender, **kwargs):
-    msg = kwargs['instance']
-
-    if msg.direction == 'O':
-        for patt in settings.MESSAGE_TAGS.keys():
-	   if re.search('^' + patt, msg.connection.identity) and not msg.pk:
-	       msg.text = msg.text + settings.MESSAGE_TAGS[patt]
-	       break
 

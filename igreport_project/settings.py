@@ -12,7 +12,6 @@ CMS_PASSWORD = 'cmspass'
 CMS_URL = 'localhost:8000/sync/'
 
 ADMINS = (('Johnson Mpeirwe', 'mpeirwe@gmail.com'), )
-MESSAGE_TAGS = {'25677': '\nSupported by MTN', '25678': '\nSupported by MTN'}
 
 # -------------------------------------------------------------------- #
 #                          PATH CONFIGURATION                          #
