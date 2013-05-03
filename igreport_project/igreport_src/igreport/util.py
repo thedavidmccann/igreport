@@ -36,6 +36,6 @@ def get_tagline(connection):
         return ''
     
     if re.search('^256(77|78)', connection.identity):
-        return '\nSupported by MTN'
+        return '\n\nSupported by MTN'
     
     return ''
