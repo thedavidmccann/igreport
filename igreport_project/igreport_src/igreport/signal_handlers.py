@@ -55,12 +55,15 @@ def handle_report(**kwargs):
     
     connection.contact.save()
     report.save()
+    text = (translations[connection.contact.language]['CONFIRMATION_MESSAGE'] % {'reference_number':report.reference_number})
+    text += util.get_tagline(connection)
+
     Message.objects.create(\
         direction='O', \
         status='Q', \
         connection=connection, \
         application='script', \
-        text=(translations[connection.contact.language]['CONFIRMATION_MESSAGE'] % {'reference_number':report.reference_number}))
+        text=text)
 
 def igreport_pre_save(sender, **kwargs):
     instance = kwargs['instance']

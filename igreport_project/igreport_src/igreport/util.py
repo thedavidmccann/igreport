@@ -1,5 +1,6 @@
 import string
 import random
+from rapidsms.models import Connection
 
 """
 Get a unique reference number. The generated reference 
@@ -29,3 +30,12 @@ def get_reference_number(pk):
     
 def generate_random_str(size=6, chars=string.ascii_uppercase + string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for x in range(size))
+
+def get_tagline(connection):
+    if not connection.identity:
+        return ''
+    
+    if re.search('^256(77|78)', connection.identity):
+        return '\nSupported by MTN'
+    
+    return ''
