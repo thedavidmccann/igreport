@@ -1,0 +1,47 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block extrastyle %}
+<style type="text/css">
+#header{
+        background-color: {{ HEADER_BGCOLOR|default:'#FFC' }};
+        /*border-bottom: solid 7px #999;*/
+	color: #000;
+}
+#branding h1 {
+        color: {{ HEADER_COLOR|default:'#FFE761' }};
+}
+
+#footer {
+	background-color: {{ FOOTER_BGCOLOR|default:'#FFC' }};
+	color: {{ FOOTER_COLOR|default:'#000' }};
+	padding: 7px 0px 7px 0px;
+	text-align: center;
+	font-size: 10px;
+	border-top: solid #FF6600 2px;
+}
+</style>
+{% endblock %}
+{% block branding %}
+        <div style="padding: 5px 0px 0px 0px">
+                <div style="float:left; padding: 0px 3px 0px 5px;">
+                        <img height="60" src="/static/igreport/img/logo.png" />
+                </div>
+                <div style="padding: 10px 0px 0px 0px">
+                        <span style="font-size: 16px;font-weight: bold;color:#000">INSPECTORATE OF GOVERNMENT</span><br/>
+			<span style="color: #000; font-style: italic;">Zero Tolerance to Corruption</span>
+                </div>
+        </div>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+{% block footer %}
+        <div id="footer">Copyright (c) Inspectorate of Government - www.igg.go.ug</div>
+<script>
+var l = document.getElementById('user-tools').getElementsByTagName('a');
+for(var i=0; i<l.length; i++) {
+	l[i].style.color = '#000';
+}
+</script>
+{% endblock %}

@@ -1,3 +1,4 @@
+import re
 import string
 import random
 from rapidsms.models import Connection

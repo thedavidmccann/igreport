@@ -10,6 +10,8 @@ from igreport.models import IGReport, Currency, UserProfile, Category, MessageLo
 from igreport import media
 from igreport.html.admin import ListStyleAdmin
 
+from igreport.unregister import unregister_apps
+
 class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
 
     list_display = ['sender', 'message', 'accused', 'amount_formatted', 'report_time', 'options']
@@ -276,3 +278,5 @@ admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(MessageLog, MessageLogAdmin)
 admin.site.register(Unprocessed, UnprocessedAdmin)
+
+unregister_apps()
