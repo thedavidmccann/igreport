@@ -14,11 +14,11 @@ from igreport.unregister import unregister_apps
 
 class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
 
-    list_display = ['sender', 'message', 'accused', 'amount_formatted', 'report_time', 'options']
+    list_display = ['sender', 'message', 'accused', 'amount_formatted', 'refno', 'report_time', 'options']
     list_filter = ['datetime']
     ordering = ['-datetime']
     #date_hierarchy = ['datetime'] # causes strange "ImproperlyConfigured" exception
-    search_fields = ['connection__identity']
+    search_fields = ['connection__identity', 'reference_number']
     actions = None
     Media = media.JQueryUIMedia
     change_list_template = 'igreport/change_list.html'
@@ -96,6 +96,15 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
     amount_formatted.short_description = 'Amount'
     amount_formatted.admin_order_field = 'amount'
     amount_formatted.allow_tags=True
+
+    def refno(self, obj):
+        if not obj.reference_number:
+	    return '__'
+	
+	return obj.reference_number
+    
+    refno.short_description = 'Reference No'
+    refno.admin_order_field = 'reference_number'
 
     def options(self, obj):
         html = ''
