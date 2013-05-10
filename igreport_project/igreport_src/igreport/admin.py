@@ -99,9 +99,9 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
 
     def refno(self, obj):
         if not obj.reference_number:
-	    return '__'
-	
-	return obj.reference_number
+            return '__'
+
+        return obj.reference_number
     
     refno.short_description = 'Reference No'
     refno.admin_order_field = 'reference_number'
@@ -118,6 +118,9 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
             link = '<a href="" onclick=\'syncit(%s);return false;\' title="Sync Report"><img src="%s/igreport/img/sync.png"></a>&nbsp;&nbsp;' % (a, settings.STATIC_URL)
             html += link
         
+        if obj.completed:
+            link = '<a href="/igreports/%s/print/" title="Print Report" target="_blank"><img src="%s/igreport/img/print.png"></a>&nbsp;&nbsp;' % (obj.id, settings.STATIC_URL)
+            html += link
         msisdn = obj.connection.identity
         t = (msisdn, obj.id, msisdn, settings.STATIC_URL)
         html += '<a href="" title="Send SMS to %s" onclick="smsp(%s,\'%s\');return false;"><img src="%s/igreport/img/sms.png" border="0" /></a>' % t

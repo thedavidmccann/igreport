@@ -1,0 +1,94 @@
+<html>
+<head>
+	<title>Report Print Preview</title>
+	<style type="text/css">
+		body {
+			margin: 0;
+			font-family: Arial;
+		}
+		div.main {
+			margin: 20px;
+		}
+		div.report {
+			/*margin: 20px;*/
+		}
+		div.report table {
+			border-collapse: collapse;
+		}
+		td.label {
+			white-space: nowrap;
+			width: 200px;
+			padding: 3px 0px 3px 10px;
+			font-weight: bold;
+			font-size: 15px;
+		}
+		td.report-data {
+			font-family: Arial;
+			width: 400px;
+			padding: 10px;
+			font-size: 15px;
+		}
+		div.sms {
+			padding-top: 5px;
+			color: #333;
+		}
+		span.text {
+			/*font-weight: bold;*/
+			color: #cc0000;
+		}
+	</style>	
+</head>
+<body>
+
+<div class="main">
+
+<div class="report-title"><h2>SMS HOTLINE REPORT</h2></div>
+
+<div class="report">
+	<table border="1" width="">
+		<tr>
+			<td class="label">Date</td>
+			<td class="report-data">{{ rpt.date }}</td>
+		</tr>
+		<tr>
+			<td class="label">Complainant</td>
+			<td class="report-data">
+				<div>{{ rpt.sender }}</div>
+				<div class="sms">Names: <span class="text">{{ rpt.sender }}</span></div>
+			</td>
+		</tr>
+		<tr>
+			<td class="label">Report</td>
+			<td class="report-data">{{ rpt.report }}</td>
+		</tr>			
+		<tr>
+			<td class="label">Accused</td>
+			<td class="report-data">{{ rpt.accused }}</td>
+		</tr>
+		<tr>
+			<td class="label">Amount</td>
+			<td class="report-data">
+				<div>{{ rpt.amount }}</div>
+				<div class="sms">User SMS: <span class="text">{{ rpt.amount_ff }}</span></div>
+			</td>
+		</tr>
+		<tr>
+			<td class="label">District</td>
+			<td class="report-data">
+				<div>{{ rpt.district }}</div>
+				<div class="sms">User SMS: <span class="text">{{ rpt.district_ff }}</span></div>
+			</td>
+		</tr>
+		<tr>
+			<td class="label">Amount</td>
+			<td class="report-data">
+				<div>{{ rpt.amount }}</div>
+				<div class="sms">User SMS: <span class="text">{{ rpt.amount_ff }}</span></div>
+			</td>
+		</tr>			
+	</table>
+</div>
+</div>
+
+</body>
+</html>
