@@ -14,7 +14,7 @@ from igreport.unregister import unregister_apps
 
 class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
 
-    list_display = ['sender', 'message', 'accused', 'amount_formatted', 'refno', 'report_time', 'options']
+    list_display = ['sender', 'message', 'amount_formatted', 'refno', 'report_time', 'options']
     list_filter = ['datetime']
     ordering = ['-datetime']
     #date_hierarchy = ['datetime'] # causes strange "ImproperlyConfigured" exception
@@ -28,7 +28,7 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
         super(IGReportAdmin, self).__init__(*args, **kwargs)
         self.list_display_links = (None,)
 
-    def accused(self, obj):
+    '''def accused(self, obj):
         text = obj.subject
         width = ''
         if text and len(text) > 50:
@@ -43,7 +43,7 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
         return html
 
     accused.short_description = 'Accused'
-    accused.allow_tags=True
+    accused.allow_tags=True'''
 
     def report_time(self, obj):
         return obj.datetime.strftime('%d/%m/%Y %H:%M')
@@ -57,12 +57,20 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
         if text and len(text) > 50:
             width = '300px'
 
-        style = 'font-size:13px;'
+        style = 'font-size:13px;padding:5px;'
         if width:
             style += 'width:%s;' % width
         if style:
             style = ' style="%s"' % style
+        
+        if obj.subject:
+            accused = '<span style="color:#000">%s</span>' % obj.subject
+        else:
+            accused = '<span style="color:#CC000">(not specified)</span>'
+        
         html = '<div id="rpt_%s"%s>%s</div>' % (obj.id, style, text)
+        html += '<div %s><div style="padding-top:10px"><strong>ACCUSED</strong>: %s</div><div>' % (style, accused)
+        
         return html
 
     message.short_description = 'Report'
