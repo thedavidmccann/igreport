@@ -23,6 +23,7 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
     Media = media.JQueryUIMedia
     change_list_template = 'igreport/change_list.html'
     change_list_results_template = 'igreport/change_list_results.html'
+    list_per_page=50
 
     def __init__(self, *args, **kwargs):
         super(IGReportAdmin, self).__init__(*args, **kwargs)
