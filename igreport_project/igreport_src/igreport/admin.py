@@ -14,7 +14,7 @@ from igreport.unregister import unregister_apps
 
 class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
 
-    list_display = ['sender', 'message', 'amount_formatted', 'refno', 'report_time', 'options']
+    list_display = ['sender', 'message', 'accused', 'amount_formatted', 'refno', 'report_time', 'options']
     list_filter = ['datetime']
     ordering = ['-datetime']
     #date_hierarchy = ['datetime'] # causes strange "ImproperlyConfigured" exception
@@ -28,7 +28,7 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
         super(IGReportAdmin, self).__init__(*args, **kwargs)
         self.list_display_links = (None,)
 
-    '''def accused(self, obj):
+    def accused(self, obj):
         text = obj.subject
         width = ''
         if text and len(text) > 50:
@@ -39,11 +39,13 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
             style += 'width:%s;' % width
         if style:
             style = ' style="%s"' % style
+        if not text:
+            text = '<span style="color:#cc0000">(none)</span>'
         html = '<div%s>%s</div>' % (style, text)
         return html
 
     accused.short_description = 'Accused'
-    accused.allow_tags=True'''
+    accused.allow_tags=True
 
     def report_time(self, obj):
         return obj.datetime.strftime('%d/%m/%Y %H:%M')
@@ -57,20 +59,12 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
         if text and len(text) > 50:
             width = '300px'
 
-        style = 'font-size:13px;padding:5px;'
+        style = 'font-size:13px;'
         if width:
             style += 'width:%s;' % width
         if style:
             style = ' style="%s"' % style
-        
-        if obj.subject:
-            accused = '<span style="color:#000">%s</span>' % obj.subject
-        else:
-            accused = '<span style="color:#CC000">(not specified)</span>'
-        
         html = '<div id="rpt_%s"%s>%s</div>' % (obj.id, style, text)
-        html += '<div %s><div style="padding-top:10px"><strong>ACCUSED</strong>: %s</div><div>' % (style, accused)
-        
         return html
 
     message.short_description = 'Report'
@@ -119,6 +113,11 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
         if not obj.synced:
             link = '<a href="" onclick="editrpt(%s);return false;" title="Edit Report"><img src="%s/igreport/img/edit.png" border="0" /></a>&nbsp;&nbsp;' % (obj.id, settings.STATIC_URL)
             html += link
+            
+        link = '<a href="/igreports/%s/print/" title="Print Report" target="_blank"><img src="%s/igreport/img/print.png"></a><br/>' % (obj.id, settings.STATIC_URL)
+        html += link
+        
+        html = '<div style="padding-bottom:5px">%s</div>' % html
 
         if obj.completed and not obj.synced:
             d = dict(id=str(obj.id), amount=str(obj.amount) if obj.amount else '', amountff=obj.amount_freeform or '')
@@ -126,9 +125,6 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
             link = '<a href="" onclick=\'syncit(%s);return false;\' title="Sync Report"><img src="%s/igreport/img/sync.png"></a>&nbsp;&nbsp;' % (a, settings.STATIC_URL)
             html += link
         
-        if obj.completed:
-            link = '<a href="/igreports/%s/print/" title="Print Report" target="_blank"><img src="%s/igreport/img/print.png"></a>&nbsp;&nbsp;' % (obj.id, settings.STATIC_URL)
-            html += link
         msisdn = obj.connection.identity
         t = (msisdn, obj.id, msisdn, settings.STATIC_URL)
         html += '<a href="" title="Send SMS to %s" onclick="smsp(%s,\'%s\');return false;"><img src="%s/igreport/img/sms.png" border="0" /></a>' % t
