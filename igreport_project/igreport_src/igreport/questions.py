@@ -11,6 +11,14 @@ translations = {
         NAME_QUESTION='What is your Name?',
         CONFIRMATION_MESSAGE='Your complaint has been recorded. Your Complaint/ref No is %(reference_number)s. For further queries call 0414347387. Thank you'
     ),
+    'ite': dict(
+        COMPLAINT_QUESTION='Olimo ecamusana kotoma aitijenar naatitai',
+        ACCUSED_QUESTION='Itigena ekiror itunganan kede erionget lo itijenaarit ijo',
+        DISTRICT_QUESTION='Itijena ebooma / edistrict lo iswamai itunganan ngin',
+        AMOUNT_QUESTION='Inyobo iswamauna (Arai erai isiringin idi bo)?',
+        NAME_QUESTION='Ingai bo ekiror koni',
+        CONFIRMATION_MESSAGE='Adaun adumun angurian kon. Enamba lo angurian kon erai %(reference_number)s. Kanu ijo ajenun acie oramu esimu lota 0414347387. Eyalama noi'     
+    ),
     'lug': dict(
         COMPLAINT_QUESTION='Loopa obulyaake kubwerere. Olina kwemulugunya ki?',
         ACCUSED_QUESTION='Kitongole ki oba muntu ki gw\'oloopa?',
