@@ -33,7 +33,7 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
         text = obj.subject
         width = ''
         if text and len(text) > 50:
-            width = '300px'
+            width = '200px'
 
         style = 'font-size:13px;'
         if width:
@@ -106,7 +106,7 @@ class IGReportAdmin(admin.ModelAdmin, ListStyleAdmin):
 
         return obj.reference_number
     
-    refno.short_description = 'Reference No'
+    refno.short_description = 'Ref. No'
     refno.admin_order_field = 'reference_number'
 
     def options(self, obj):
